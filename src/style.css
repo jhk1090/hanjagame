@@ -1,0 +1,45 @@
+@font-face {
+  font-family: 'hanyang';
+  src: url("../public/static/fonts/HanyangHaeseo.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'jamsil';
+  src: url("../public/static/fonts/Jamsil.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+#root {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+html {
+  font-size: 7px;
+}
+
+/* @media only screen and (max-width: 768px) {
+  html {
+      font-size: 7px;
+  }
+}
+
+@media only screen and (min-width: 769px) and (max-width: 992px) {
+  html {
+      font-size: 9px;
+  }
+}
+
+@media only screen and (min-width : 993px) {
+  html {
+      font-size: 11px;
+  }
+} */
