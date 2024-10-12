@@ -26,6 +26,15 @@ html {
   font-size: 7px;
 }
 
+body {
+  margin: 0;
+}
+
+* {
+  font-family: jamsil, 'hanyang', sans-serif;
+  box-sizing: border-box;
+}
+
 /* @media only screen and (max-width: 768px) {
   html {
       font-size: 7px;
