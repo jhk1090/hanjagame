@@ -124,6 +124,7 @@ export const ReadyAcidrainPage = () => {
             ) : tab === "selectGameConfig" && dictConfig !== undefined ? (
               <>
                 <SubTitle>시작할까요?</SubTitle>
+                <Link to={`/play?key=${JSON.stringify(dictConfig)}`}><Button>시작</Button></Link>
               </>
             ) : ""}
           </Article>

@@ -8,6 +8,7 @@ import { busu } from "../database/busu";
 import { DictViewPage } from "./dict/view";
 import { ReadyPage } from "./ready";
 import { ReadyAcidrainPage } from "./ready/acidrain";
+import { PlayPage } from "./play";
 
 const IndexPage = () => {
   const [initPage, setInitPage] = React.useState<JSX.Element>(<></>);
@@ -68,6 +69,7 @@ export default function App() {
             <Route index element={<ReadyPage />} />
             <Route path="acidrain" element={<ReadyAcidrainPage />} />
           </Route>
+          <Route path="/play" element={<PlayPage />} />
         </Routes>
       </BrowserRouter>
     </>
