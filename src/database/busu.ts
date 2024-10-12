@@ -1,4 +1,4 @@
-interface IData {
+export interface IData {
     form: string[];
     sound: string[];
     define?: string;
