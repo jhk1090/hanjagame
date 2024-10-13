@@ -2,25 +2,30 @@ import styled from "styled-components";
 import { Article, Button, Main, Paragraph, SubTitle, Title } from "..";
 import { Link } from "react-router-dom";
 
-export const DictTitle = styled(Title)`
+export const ReadyTitle = styled(Title)`
   display: flex;
   text-align: left;
   align-items: center;
   flex-direction: row;
   gap: 3rem;
-  font-size: 10rem;
+  font-size: 8rem;
   margin: 0;
 
   span:nth-child(1) {
-    font-size: 12.5rem;
+    font-size: 10rem;
+  }
+
+  i {
+    font-weight: 400;
+    font-size: 6rem;
   }
 `
 
-export const DictImage = styled.img`
+export const ReadyImage = styled.img`
   width: 6rem;
 `
 
-export const DictSubTitle = styled(SubTitle)`
+export const ReadySubTitle = styled(SubTitle)`
   font-size: 6rem;
   margin: 0;
   margin-top: .5rem;
@@ -31,7 +36,7 @@ export const DictSubTitle = styled(SubTitle)`
   }
 `
 
-export const DictMain = styled(Main)`
+export const ReadyMain = styled(Main)`
   width: 100%;
   background-color: rgba(255, 255, 255, 0.4);
   border-radius: 1rem;
@@ -39,23 +44,28 @@ export const DictMain = styled(Main)`
   padding-bottom: 5rem;
 `
 
-export const DictArticle = styled(Article)`
+export const ReadyArticle = styled(Article)`
   margin: 0;
   margin-top: 3.5rem;
   gap: 2rem;
 `
 
-export const DictLink = styled(Link)`
+export const ReadyLink = styled(Link)`
   all: unset;
 `
 
-export const DictButton = styled(Button)`
+export const ReadyButton = styled(Button)`
   
 `;
 
-export const DictParagraph = styled(Paragraph)`
+export const ReadyParagraph = styled(Paragraph)`
   margin: 0;
   margin-top: .25rem;
   margin-bottom: .25rem;
   font-size: 4rem;
+`
+
+export const ReadyDescription = styled.span`
+  font-size: 4rem;
+  margin-bottom: 2rem;
 `

@@ -1,0 +1,5 @@
+export const leftChevron = "/static/images/left-chevron.svg"
+export const plusIcon = "/static/images/plus-icon.svg"
+export const closeIcon = "/static/images/close-icon.svg"
+export const checkIcon = "/static/images/check-icon.svg"
+export const enterIcon = "/static/images/enter-icon.svg"

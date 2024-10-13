@@ -1,8 +1,10 @@
 import React from "react";
 import { Article, Button, Main, PageTitle, SubTitle, Title } from "../../../components";
-import { Dict, DictDefine, DictForm, DictSound } from "../../../components/dict/view";
+import { Dict, DictDefine, DictDescription, DictForm, DictSound, DictSummary } from "../../../components/dict/view";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IDict } from "../../../database/busu";
+import { DictArticle, DictButton, DictImage, DictLink, DictMain, DictSubTitle, DictTitle } from "../../../components/dict";
+import { leftChevron } from "../../../constant/IMAGE_PATH";
 
 export const DictViewPage = () => {
   const navigate = useNavigate();
@@ -26,35 +28,52 @@ export const DictViewPage = () => {
     }
     setInitPage(
       <>
-        <PageTitle title={`${dictName} | 사전 | 한자 도감`} />
-        <Main>
-          <Title>{dictName}</Title>
-          <Article>
-            <Link to={"/dict"}><Button>뒤로가기</Button></Link>
+        <PageTitle title={`${dictName} | 사전 | 한자 마당`} />
+        <DictMain>
+          <DictTitle>
+            <span>字</span>
+            <span>{dictName}</span>
+          </DictTitle>
+          <DictDescription>{dict.description}</DictDescription>
+          <DictLink to={".."}>
+            <DictButton>
+              <DictImage src={leftChevron} />
+              이전으로
+            </DictButton>
+          </DictLink>
+          <DictArticle>
             {Object.keys(dict.content).map((group) => (
               <>
-                <SubTitle>{group}</SubTitle>
-                {dict.content[group].map((dictLine) => (
-                  <Dict>
-                    <div>
-                      <DictForm>{dictLine.form.join(",")}</DictForm>
-                      <DictSound>{dictLine.sound.join(", ")}</DictSound>
-                    </div>
-                    <div>
-                      {dictLine.define ? (
-                        <>
-                          <DictDefine>{dictLine.define}</DictDefine>
-                        </>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                  </Dict>
-                ))}
+                <details>
+                  <DictSummary>
+                    <DictSubTitle>
+                      <DictImage src={leftChevron} style={{transform:"rotate(-90deg)"}} /> {group} <span>({dict.content[group].length})</span>
+                    </DictSubTitle>
+                  </DictSummary>
+                  <div>
+                    {dict.content[group].map((dictLine) => (
+                      <Dict>
+                        <div>
+                          <DictForm>{dictLine.form.join(",")}</DictForm>
+                          <DictSound>{dictLine.sound.join(", ")}</DictSound>
+                        </div>
+                        <div>
+                          {dictLine.define ? (
+                            <>
+                              <DictDefine>{dictLine.define}</DictDefine>
+                            </>
+                          ) : (
+                            <></>
+                          )}
+                        </div>
+                      </Dict>
+                    ))}
+                  </div>
+                </details>
               </>
             ))}
-          </Article>
-        </Main>
+          </DictArticle>
+        </DictMain>
       </>
     );
   }, [dict]);

@@ -25,3 +25,13 @@ export const DictSound = styled.span`
 export const DictDefine = styled.span`
   font-size: 3rem;
 `;
+
+export const DictDescription = styled.span`
+  font-size: 4rem;
+  margin-bottom: 2rem;
+`
+export const DictSummary = styled.summary`
+  &::marker {
+    font-size: 0;
+  }
+`

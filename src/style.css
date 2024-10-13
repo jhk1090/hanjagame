@@ -33,6 +33,7 @@ body {
 * {
   font-family: jamsil, 'hanyang', sans-serif;
   box-sizing: border-box;
+  user-select: none;
 }
 
 /* @media only screen and (max-width: 768px) {
