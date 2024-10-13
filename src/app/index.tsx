@@ -323,7 +323,10 @@ export default function App() {
 
 const IndexReadyPage = () => {
   const { setColorPair } = React.useContext(IndexContext);
-  setColorPair(["#d68c47", "#ffe7c4"])
+  React.useEffect(()=>{
+    setColorPair(["#d68c47", "#ffe7c4"])    
+  }, [])
+
 
   return <Outlet />
 }
