@@ -2,15 +2,16 @@ import { Sprite, Stage, useTick, Text } from "@pixi/react";
 import { debug } from "console";
 import { TextStyle } from "pixi.js";
 import React, { JSX } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IData } from "../../database/busu";
-import { Input, InputGuide, Label, PlayAfterPanel, PlayAfterSubTitle, PlayAfterTitle, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../components/play";
+import { DictCount, Input, InputGuide, Label, PlayAfterButton, PlayAfterButtonSet, PlayAfterPanel, PlayAfterSubTitle, PlayAfterSummary, PlayAfterTitle, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../components/play";
 import { useForm } from "react-hook-form";
 import { Button, Main, SubTitle, Title } from "../../components";
 import { DictImage } from "../../components/dict";
 import { enterIcon } from "../../constant/IMAGE_PATH";
 import { IndexContext } from "..";
-import { DictForm, DictSound } from "../../components/dict/view";
+import { DictForm, DictSound, DictSummary } from "../../components/dict/view";
+import { ReadyButton, ReadyLink } from "../../components/ready";
 
 function getRandomArbitrary(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -23,7 +24,10 @@ function getRandomInt(min: number, max: number) {
 }
 
 export const PlayPage = () => {
-  const [hanjas, setHanjas] = React.useState<{ [k: string]: { config: IData; element: JSX.Element } }>({});
+  const navigate = useNavigate();
+
+  const [hanjas, setHanjas] = React.useState<{ [k: string]: IData & { y: number } }>({});
+  const [hanjasElement, setHanjasElement] = React.useState<{ [k: string]: JSX.Element }>({});
   const [searchParams, setSearchParams] = useSearchParams();
   const [property, _] = React.useState<IData[]>(JSON.parse(searchParams.get("key") ?? "[]") as IData[]);
   const [difficulty, __] = React.useState<number>(JSON.parse(searchParams.get("difficulty") ?? "180") as number);
@@ -31,11 +35,11 @@ export const PlayPage = () => {
 
   const { handleSubmit, register, resetField, setValue } = useForm<{ answer: string; }>();
   const [count, setCount] = React.useState(0);
-  const [wrongCount, setWrongCount] = React.useState(0);
   const [statElement, setStatElement] = React.useState<JSX.Element>(<></>);
   const [inputElement, setInputElement] = React.useState<JSX.Element>(<></>);
   const [isInit, setIsInit] = React.useState(false);
   const [isCounterInit, setIsCounterInit] = React.useState<string>("3");
+  const [isAfter, setIsAfter] = React.useState(false);
   const [timeText, setTimeText] = React.useState(<></>);
   const [stageBackgroundAlpha, setStageBackgroundAlpha] = React.useState(0.4);
 
@@ -53,15 +57,13 @@ export const PlayPage = () => {
     });
 
     React.useEffect(() => {
-      setY(hanjaTick * 100);
-      if (hanjaTick * 100 > 750) {
-        setWrongCount(cur => cur + 1);
+      if (hanjaTick * 100 < 800) {
+        setY(hanjaTick * 100);
         setHanjas((cur) => {
           const replaced = { ...cur };
-          setAfterStatWrong(cur => [...cur, replaced[uuid].config])
-          delete replaced[uuid];
+          replaced[uuid].y = y;
           return replaced;
-        });
+        })
       }
     }, [hanjaTick]);
 
@@ -85,6 +87,10 @@ export const PlayPage = () => {
   }
 
   React.useEffect(() => {
+    if (isAfter) {
+      return;
+    }
+
     const timer = setInterval(() => {
       setCount(count + 1);
     }, 10);
@@ -96,11 +102,12 @@ export const PlayPage = () => {
     setStatElement(
       <>
         <PlayStatBlock>
+          <ReadyLink to={"/ready/acidrain"}><ReadyButton>이전으로</ReadyButton></ReadyLink>
           <p>
             <SubTitle>{ difficulty < 120 ? "😱 난이도: pH1" : difficulty < 180 ? "😨 난이도: pH4" : difficulty < 240 ? "😐 난이도: pH7" : difficulty < 300 ? "😊 난이도: pH10" : "😆 난이도: pH13" }</SubTitle>
           </p>
         <p>
-          <SubTitle>❌ 틀린 개수: {wrongCount}/5</SubTitle>
+          <SubTitle>❌ 틀린 개수: {afterStatWrong.length}/5</SubTitle>
         </p>
         <p>
           <SubTitle>⏱️ {((count - 200) / 100 < 0) ? "0초" : ((count - 200) / 100) + "초"}</SubTitle>
@@ -108,9 +115,15 @@ export const PlayPage = () => {
         </PlayStatBlock>
       </>
     );
-  }, [wrongCount, count]);
+  }, [afterStatWrong, count]);
 
   React.useEffect(() => {
+    if (isAfter) {
+      setHanjas({})
+      setHanjasElement({})
+      return;
+    }
+    
     if (!isInit) {
       if (count % 60 !== 0) {
         return;
@@ -138,31 +151,47 @@ export const PlayPage = () => {
       }
     }
 
+
     const result = property[getRandomInt(0, property.length - 1)];
     const uuid = crypto.randomUUID();
     setHanjas((cur) => {
       return {
         ...cur,
-        [uuid]: { config: result, element: <Hanja key={uuid} text={result.form[getRandomInt(0, result.form.length - 1)]} uuid={uuid} /> }
+        [uuid]: { ...result, y: 0 }
       };
     });
+    setHanjasElement((cur) => {
+      return {
+        ...cur,
+        [uuid]: <Hanja key={uuid} text={result.form[getRandomInt(0, result.form.length - 1)]} uuid={uuid} />
+      }
+    })
     setIsInit(true);
-  }, [count])
+  }, [isAfter, count])
   React.useEffect(() => {
+    if (isAfter) {
+      return;
+    }
+
     setInputElement(<>
         <PlayInputFieldBlock>
         <form
           onSubmit={handleSubmit(async (data) => {
             let result: string | null = null;
             for await (const [key, value] of Object.entries(hanjas).toReversed()) {
-              if (value.config.sound.includes(data.answer?.trim() ?? "")) {
+              if (value.y < 750 && value.sound.includes(data.answer?.trim() ?? "")) {
                 result = key;
               }
             }
             if (result !== null) {
+              setAfterStatRight(cur => [ ...cur, hanjas[result] ])
               setHanjas((cur) => {
                 const replaced = { ...cur };
-                setAfterStatRight(cur => [ ...cur, replaced[result].config ])
+                delete replaced[result];
+                return replaced;
+              });
+              setHanjasElement((cur) => {
+                const replaced = { ...cur };
                 delete replaced[result];
                 return replaced;
               });
@@ -179,12 +208,20 @@ export const PlayPage = () => {
         </form>
         </PlayInputFieldBlock>
     </>)
-  }, [hanjas])
+
+    const survives = Object.entries(hanjas).filter(([k, v]) => v.y >= 750).map(([k, v]) => k)
+    setAfterStatWrong(survives.map(survive => hanjas[survive]))
+    setHanjasElement((cur) => {
+      let item: Record<string, JSX.Element> = {};
+      Object.entries(cur).filter(([k, v]) => !survives.includes(k)).forEach(([k, v]) => {item[k] = v});
+      return item;
+    })
+  }, [hanjas, isAfter])
 
   const stageRef = React.useRef<Stage>(null);
   React.useEffect(() => {
-    setStageBackgroundAlpha(wrongCount === 0 ? 0.3 : wrongCount === 1 ? 0.4 : wrongCount === 2 ? 0.5 : wrongCount === 3 ? 0.6 : wrongCount === 4 ? 0.7 : wrongCount === 5 ? 0.8 : 0.9)
-  }, [wrongCount])
+    setStageBackgroundAlpha(afterStatWrong.length === 0 ? 0.3 : afterStatWrong.length === 1 ? 0.4 : afterStatWrong.length === 2 ? 0.5 : afterStatWrong.length === 3 ? 0.6 : afterStatWrong.length === 4 ? 0.7 : afterStatWrong.length === 5 ? 0.8 : 0.9)
+  }, [afterStatWrong])
 
   React.useEffect(() => {
     //@ts-ignore
@@ -194,21 +231,65 @@ export const PlayPage = () => {
   }, [stageBackgroundAlpha])
 
   React.useEffect(() => {
-    if (wrongCount === 5) {
-      console.log(afterStatWrong)
+    if (afterStatWrong.length === 5) {
+      const wrongItems: Record<string, { dict: IData; count: number; }> = {}
+      for (const item of afterStatWrong) {
+        if (Object.keys(wrongItems).includes(item.key)) {
+          wrongItems[item.key].count++;
+        } else {
+          wrongItems[item.key] = { dict: item, count: 1 }
+        }
+      }
+
+      const rightItems: Record<string, { dict: IData; count: number; }> = {}
+      for (const item of afterStatRight) {
+        if (Object.keys(rightItems).includes(item.key)) {
+          rightItems[item.key].count++;
+        } else {
+          rightItems[item.key] = { dict: item, count: 1 }
+        }
+      }
+
+      setIsAfter(true);
       setAfterPanel(<>
         <PlayAfterPanel>
           <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
+          <PlayAfterButtonSet>
+            <ReadyLink to={`/play?key=${JSON.stringify(property)}&difficulty=${difficulty}`} reloadDocument><PlayAfterButton>다시 하기</PlayAfterButton></ReadyLink>
+            <PlayAfterButton onClick={() => navigate("/")}>홈으로</PlayAfterButton>
+          </PlayAfterButtonSet>
+          <PlayAfterSubTitle>⏱️ 시간: {(count - 200) / 100}초</PlayAfterSubTitle>
           <PlayAfterSubTitle>📊 통계</PlayAfterSubTitle>
           <p>
             <details>
-              <summary>틀린 한자</summary>
+              <PlayAfterSummary>틀린 한자</PlayAfterSummary>
               <div>
-                {afterStatWrong.map(dictLine => {
+                {Object.values(wrongItems).map(item => {
                   return (
                     <>
-                      <DictForm>{dictLine?.form.join(",")}</DictForm>
-                      <DictSound>{dictLine?.sound.join(", ")}</DictSound>
+                      <div>
+                        <DictForm>{item.dict.form.join(",")}</DictForm>
+                        <DictSound>{item.dict.sound.join(", ")}</DictSound>
+                        <DictCount>({item.count})</DictCount>
+                      </div>
+                    </>
+                  );
+                })}
+              </div>
+            </details>
+          </p>
+          <p>
+            <details>
+              <PlayAfterSummary>맞춘 한자</PlayAfterSummary>
+              <div>
+                {Object.values(rightItems).map(item => {
+                  return (
+                    <>
+                      <div>
+                        <DictForm>{item.dict.form.join(",")}</DictForm>
+                        <DictSound>{item.dict.sound.join(", ")}</DictSound>
+                        <DictCount>({item.count})</DictCount>
+                      </div>
                     </>
                   );
                 })}
@@ -218,7 +299,7 @@ export const PlayPage = () => {
         </PlayAfterPanel>
       </>)
     }
-  }, [wrongCount])
+  }, [afterStatWrong, count])
 
   React.useEffect(() => {
     searchParams.delete("key")
@@ -226,12 +307,13 @@ export const PlayPage = () => {
     setSearchParams(searchParams)
     setColorPair(["#d68c47", "#ffe7c4"])
   }, [])
+  console.log(Object.keys(hanjasElement).length)
   return (
     <>
       <PlayMain>
         {/* @ts-ignore */}
         <Stage ref={stageRef} style={{zIndex: 1001}} width={600} height={800} options={{ backgroundColor: "#df5555", backgroundAlpha: stageBackgroundAlpha, antialias: true }}>
-          {Object.values(hanjas).map((v) => (v ? v.element : <></>))}
+          {Object.values(hanjasElement)}
           {timeText}
         </Stage>
         {statElement}

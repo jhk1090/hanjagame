@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Main, SubTitle, Title } from "..";
 import { DictImage } from "../dict";
+import { DictSound } from "../dict/view";
+import { ReadyButton } from "../ready";
 
 export const Input = styled.input`
   all: unset;
@@ -73,9 +75,13 @@ export const PlayAfterPanel = styled.div`
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.75);
   border-radius: 2rem;
   width: 600px;
+  max-height: 100vh;
+  overflow: scroll;
+  overflow-x: auto;
+  overflow-y: auto;
   padding: 2rem;
   z-index: 1003;
 `
@@ -87,4 +93,24 @@ export const PlayAfterTitle = styled(Title)`
 
 export const PlayAfterSubTitle = styled(SubTitle)`
   font-size: 7rem;
+`
+
+export const PlayAfterSummary = styled.summary`
+  font-size: 5rem;
+`
+
+export const DictCount = styled(DictSound)`
+  font-size: 4.5rem;
+`
+
+export const PlayAfterButton = styled(ReadyButton)`
+  background-color: #afafaf90;
+  padding: 2rem 5rem 2rem 5rem;
+`
+
+export const PlayAfterButtonSet = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
 `
