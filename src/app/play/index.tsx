@@ -28,9 +28,8 @@ export const PlayPage = () => {
 
   const [hanjas, setHanjas] = React.useState<{ [k: string]: IData & { y: number } }>({});
   const [hanjasElement, setHanjasElement] = React.useState<{ [k: string]: JSX.Element }>({});
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [property, _] = React.useState<IData[]>(JSON.parse(searchParams.get("key") ?? "[]") as IData[]);
-  const [difficulty, __] = React.useState<number>(JSON.parse(searchParams.get("difficulty") ?? "180") as number);
+  const [property, _] = React.useState<IData[]>(JSON.parse(localStorage.getItem("dict-play") ?? '{ "key": [], "difficulty": 180 }').key as IData[]);
+  const [difficulty, __] = React.useState<number>(JSON.parse(localStorage.getItem("dict-play") ?? '{ "key": [], "difficulty": 180 }').difficulty as number);
   const { setColorPair } = React.useContext(IndexContext);
 
   const { handleSubmit, register, resetField, setValue } = useForm<{ answer: string; }>();
@@ -255,7 +254,11 @@ export const PlayPage = () => {
         <PlayAfterPanel>
           <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
           <PlayAfterButtonSet>
-            <ReadyLink to={`/play?key=${JSON.stringify(property)}&difficulty=${difficulty}`} reloadDocument><PlayAfterButton>다시 하기</PlayAfterButton></ReadyLink>
+            <PlayAfterButton onClick={() => {
+              localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty }))
+              navigate(`/play`);
+              location.reload();
+            }}>다시 하기</PlayAfterButton>
             <PlayAfterButton onClick={() => navigate("/")}>홈으로</PlayAfterButton>
           </PlayAfterButtonSet>
           <PlayAfterSubTitle>⏱️ 시간: {(count - 200) / 100}초</PlayAfterSubTitle>
@@ -302,9 +305,10 @@ export const PlayPage = () => {
   }, [afterStatWrong, count])
 
   React.useEffect(() => {
-    searchParams.delete("key")
-    searchParams.delete("difficulty")
-    setSearchParams(searchParams)
+    if (property.length === 0) {
+      navigate("/");
+    }
+    localStorage.removeItem("dict-play")
     setColorPair(["#d68c47", "#ffe7c4"])
   }, [])
   return (

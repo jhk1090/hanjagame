@@ -234,7 +234,8 @@ const GameConfigPage = () => {
           <SubTitle>난이도 (pH)</SubTitle>
           <form
             onSubmit={handleSubmit((data) => {
-              navigate(`/play?key=${JSON.stringify(dictConfig)}&difficulty=${data.difficulty}`);
+              localStorage.setItem("dict-play", JSON.stringify({ key: dictConfig, difficulty: data.difficulty }))
+              navigate(`/play`);
             })}
           >
             <ReadyGameConfigSelect {...register("difficulty")} defaultValue={180}>

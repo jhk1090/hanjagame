@@ -40,6 +40,7 @@ export const ButtonLabel = styled.span`
 
 export const Button = styled.button`
   all: unset;
+  cursor: pointer;
   display: flex;
   flex-direction: row;
   padding: 1rem;
