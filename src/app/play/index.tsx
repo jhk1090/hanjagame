@@ -307,7 +307,6 @@ export const PlayPage = () => {
     setSearchParams(searchParams)
     setColorPair(["#d68c47", "#ffe7c4"])
   }, [])
-  console.log(Object.keys(hanjasElement).length)
   return (
     <>
       <PlayMain>
