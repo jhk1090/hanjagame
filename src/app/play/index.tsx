@@ -4,12 +4,13 @@ import { TextStyle } from "pixi.js";
 import React, { JSX } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 import { IData } from "../../database/busu";
-import { Input, InputGuide, Label, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../components/play";
+import { Input, InputGuide, Label, PlayAfterPanel, PlayAfterSubTitle, PlayAfterTitle, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../components/play";
 import { useForm } from "react-hook-form";
-import { Button, Main, SubTitle } from "../../components";
+import { Button, Main, SubTitle, Title } from "../../components";
 import { DictImage } from "../../components/dict";
 import { enterIcon } from "../../constant/IMAGE_PATH";
 import { IndexContext } from "..";
+import { DictForm, DictSound } from "../../components/dict/view";
 
 function getRandomArbitrary(min: number, max: number) {
   return Math.random() * (max - min) + min;
@@ -25,9 +26,10 @@ export const PlayPage = () => {
   const [hanjas, setHanjas] = React.useState<{ [k: string]: { config: IData; element: JSX.Element } }>({});
   const [searchParams, setSearchParams] = useSearchParams();
   const [property, _] = React.useState<IData[]>(JSON.parse(searchParams.get("key") ?? "[]") as IData[]);
+  const [difficulty, __] = React.useState<number>(JSON.parse(searchParams.get("difficulty") ?? "180") as number);
   const { setColorPair } = React.useContext(IndexContext);
 
-  const { handleSubmit, register, resetField } = useForm<{ answer: string; }>();
+  const { handleSubmit, register, resetField, setValue } = useForm<{ answer: string; }>();
   const [count, setCount] = React.useState(0);
   const [wrongCount, setWrongCount] = React.useState(0);
   const [statElement, setStatElement] = React.useState<JSX.Element>(<></>);
@@ -35,6 +37,11 @@ export const PlayPage = () => {
   const [isInit, setIsInit] = React.useState(false);
   const [isCounterInit, setIsCounterInit] = React.useState<string>("3");
   const [timeText, setTimeText] = React.useState(<></>);
+  const [stageBackgroundAlpha, setStageBackgroundAlpha] = React.useState(0.4);
+
+  const [afterStatWrong, setAfterStatWrong] = React.useState<IData[]>([]);
+  const [afterStatRight, setAfterStatRight] = React.useState<IData[]>([]);
+  const [afterPanel, setAfterPanel] = React.useState(<></>);
 
   const Hanja = ({ text, uuid }: { text: string; uuid: string }) => {
     const [hanjaTick, setHanjaTick] = React.useState(0);
@@ -51,6 +58,7 @@ export const PlayPage = () => {
         setWrongCount(cur => cur + 1);
         setHanjas((cur) => {
           const replaced = { ...cur };
+          setAfterStatWrong(cur => [...cur, replaced[uuid].config])
           delete replaced[uuid];
           return replaced;
         });
@@ -88,11 +96,14 @@ export const PlayPage = () => {
     setStatElement(
       <>
         <PlayStatBlock>
+          <p>
+            <SubTitle>{ difficulty < 120 ? "😱 난이도: pH1" : difficulty < 180 ? "😨 난이도: pH4" : difficulty < 240 ? "😐 난이도: pH7" : difficulty < 300 ? "😊 난이도: pH10" : "😆 난이도: pH13" }</SubTitle>
+          </p>
         <p>
-          <SubTitle>틀린 개수: {wrongCount}/3</SubTitle>
+          <SubTitle>❌ 틀린 개수: {wrongCount}/5</SubTitle>
         </p>
         <p>
-          <SubTitle>{((count - 200) / 100 < 0) ? "0초" : ((count - 200) / 100) + "초"}</SubTitle>
+          <SubTitle>⏱️ {((count - 200) / 100 < 0) ? "0초" : ((count - 200) / 100) + "초"}</SubTitle>
         </p>
         </PlayStatBlock>
       </>
@@ -122,7 +133,7 @@ export const PlayPage = () => {
         }
       }
     } else {
-      if (count % 60 !== 0) {
+      if (count % difficulty !== 0) {
         return;
       }
     }
@@ -151,6 +162,7 @@ export const PlayPage = () => {
             if (result !== null) {
               setHanjas((cur) => {
                 const replaced = { ...cur };
+                setAfterStatRight(cur => [ ...cur, replaced[result].config ])
                 delete replaced[result];
                 return replaced;
               });
@@ -169,20 +181,62 @@ export const PlayPage = () => {
     </>)
   }, [hanjas])
 
+  const stageRef = React.useRef<Stage>(null);
+  React.useEffect(() => {
+    setStageBackgroundAlpha(wrongCount === 0 ? 0.3 : wrongCount === 1 ? 0.4 : wrongCount === 2 ? 0.5 : wrongCount === 3 ? 0.6 : wrongCount === 4 ? 0.7 : wrongCount === 5 ? 0.8 : 0.9)
+  }, [wrongCount])
+
+  React.useEffect(() => {
+    //@ts-ignore
+    window.app = stageRef.current
+    //@ts-ignore
+    stageRef.current.app.renderer.backgroundAlpha = stageBackgroundAlpha;
+  }, [stageBackgroundAlpha])
+
+  React.useEffect(() => {
+    if (wrongCount === 5) {
+      console.log(afterStatWrong)
+      setAfterPanel(<>
+        <PlayAfterPanel>
+          <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
+          <PlayAfterSubTitle>📊 통계</PlayAfterSubTitle>
+          <p>
+            <details>
+              <summary>틀린 한자</summary>
+              <div>
+                {afterStatWrong.map(dictLine => {
+                  return (
+                    <>
+                      <DictForm>{dictLine?.form.join(",")}</DictForm>
+                      <DictSound>{dictLine?.sound.join(", ")}</DictSound>
+                    </>
+                  );
+                })}
+              </div>
+            </details>
+          </p>
+        </PlayAfterPanel>
+      </>)
+    }
+  }, [wrongCount])
+
   React.useEffect(() => {
     searchParams.delete("key")
+    searchParams.delete("difficulty")
     setSearchParams(searchParams)
     setColorPair(["#d68c47", "#ffe7c4"])
   }, [])
   return (
     <>
       <PlayMain>
-        <Stage style={{zIndex: 1001}} width={600} height={800} options={{ backgroundColor: "#dfba55", backgroundAlpha: 0.4, antialias: true }}>
+        {/* @ts-ignore */}
+        <Stage ref={stageRef} style={{zIndex: 1001}} width={600} height={800} options={{ backgroundColor: "#df5555", backgroundAlpha: stageBackgroundAlpha, antialias: true }}>
           {Object.values(hanjas).map((v) => (v ? v.element : <></>))}
           {timeText}
         </Stage>
         {statElement}
         {inputElement}
+        {afterPanel}
       </PlayMain>
     </>
   );

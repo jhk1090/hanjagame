@@ -9,6 +9,7 @@ import { ReadyArticle, ReadyButton, ReadyDescription, ReadyImage, ReadyLink, Rea
 import { checkIcon, closeIcon, leftChevron, plusIcon } from "../../../constant/IMAGE_PATH";
 import { DictImage, DictSubTitle } from "../../../components/dict";
 import { ReadyDictlineSelectionButtonSet, ReadyDictlineSelectionSubTitle, ReadyDictlineSelectionWarning } from "../../../components/ready/acidrain/DictlineSelection";
+import { ReadyGameConfigSelect } from "../../../components/ready/acidrain/GameConfig";
 
 const ReadyAcidrainContext = React.createContext<{
   dict: IDict | undefined;
@@ -210,6 +211,8 @@ const DictlineSelectionPage = () => {
 const GameConfigPage = () => {
   const navigate = useNavigate();
   const { dictConfig, setDictConfig, setTab } = React.useContext(ReadyAcidrainContext);
+  type TDictConfig = { difficulty: number; };
+  const { unregister, register, setValue, getValues, handleSubmit } = useForm<TDictConfig>();
 
   return (
     <>
@@ -228,14 +231,21 @@ const GameConfigPage = () => {
           이전으로
         </ReadyButton>
         <ReadyArticle>
-          <SubTitle>시작할까요?</SubTitle>
-          <ReadyButton
-            onClick={() => {
-              navigate(`/play?key=${JSON.stringify(dictConfig)}`);
-            }}
+          <SubTitle>난이도 (pH)</SubTitle>
+          <form
+            onSubmit={handleSubmit((data) => {
+              navigate(`/play?key=${JSON.stringify(dictConfig)}&difficulty=${data.difficulty}`);
+            })}
           >
-            시작
-          </ReadyButton>
+            <ReadyGameConfigSelect {...register("difficulty")} defaultValue={180}>
+              <option value={300}>😆 매우 쉬움 (pH13)</option>
+              <option value={240}>😊 쉬움 (pH10)</option>
+              <option value={180}>😐 보통 (pH7)</option>
+              <option value={120}>😨 어려움 (pH4)</option>
+              <option value={60}>😱 매우 어려움 (pH1)</option>
+            </ReadyGameConfigSelect>
+            <ReadyButton type="submit">시작</ReadyButton>
+          </form>
         </ReadyArticle>
       </ReadyMain>
     </>

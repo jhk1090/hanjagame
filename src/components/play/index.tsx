@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Main } from "..";
+import { Main, SubTitle, Title } from "..";
 import { DictImage } from "../dict";
 
 export const Input = styled.input`
@@ -60,10 +60,31 @@ export const PlayStatBlock = styled.div`
   z-index: 1001;
   display: flex;
   flex-direction: column;
-  left: -40rem;
+  left: -45rem;
 `
 
 export const PlayImage = styled(DictImage)`
   width: 5rem;
   transform: scaleX(-1);
+`
+
+export const PlayAfterPanel = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 2rem;
+  width: 600px;
+  padding: 2rem;
+  z-index: 1003;
+`
+
+export const PlayAfterTitle = styled(Title)`
+  font-size: 12rem;
+  font-weight: 800;
+`
+
+export const PlayAfterSubTitle = styled(SubTitle)`
+  font-size: 7rem;
 `
