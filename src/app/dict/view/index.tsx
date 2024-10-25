@@ -1,6 +1,6 @@
 import React from "react";
 import { Article, Button, Main, PageTitle, SubTitle, Title } from "../../../components";
-import { Dict, DictDefine, DictDescription, DictForm, DictSound, DictSummary } from "../../../components/dict/view";
+import { Dict, DictDefine, DictDescription, DictForm, DictHorizontal, DictSound, DictSummary } from "../../../components/dict/view";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IDict } from "../../../database/busu";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain, DictSubTitle, DictTitle } from "../../../components/dict";
@@ -28,14 +28,14 @@ export const DictViewPage = () => {
     }
     setInitPage(
       <>
-        <PageTitle title={`${dictName} | 사전 | 한자 마당`} />
+        <PageTitle title={`${dict.name} | 사전 | 한자 마당`} />
         <DictMain>
           <DictTitle>
             <span>字</span>
-            <span>{dictName}</span>
+            <span>{dict.name}</span>
           </DictTitle>
           <DictDescription>{dict.description}</DictDescription>
-          <DictLink to={".."}>
+          <DictLink to={"/dict"}>
             <DictButton>
               <DictImage src={leftChevron} />
               이전으로
@@ -46,12 +46,15 @@ export const DictViewPage = () => {
               <>
                 <details>
                   <DictSummary>
+                    <DictImage src={leftChevron} style={{transform:"rotate(-90deg)"}} /> 
                     <DictSubTitle>
-                      <DictImage src={leftChevron} style={{transform:"rotate(-90deg)"}} /> {group} <span>({dict.content[group].length})</span>
+                      {group} <span>({dict.content[group].length})</span>
                     </DictSubTitle>
                   </DictSummary>
                   <div>
                     {dict.content[group].map((dictLine) => (
+                      <>
+                      <DictHorizontal />
                       <Dict>
                         <div>
                           <DictForm>{dictLine.form.join(",")}</DictForm>
@@ -67,6 +70,7 @@ export const DictViewPage = () => {
                           )}
                         </div>
                       </Dict>
+                      </>
                     ))}
                   </div>
                 </details>

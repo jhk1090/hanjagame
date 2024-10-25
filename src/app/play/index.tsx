@@ -7,10 +7,10 @@ import { IData } from "../../database/busu";
 import { DictCount, Input, InputGuide, Label, PlayAfterButton, PlayAfterButtonSet, PlayAfterPanel, PlayAfterSubTitle, PlayAfterSummary, PlayAfterTitle, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../components/play";
 import { useForm } from "react-hook-form";
 import { Button, Main, SubTitle, Title } from "../../components";
-import { DictImage } from "../../components/dict";
-import { enterIcon } from "../../constant/IMAGE_PATH";
+import { DictImage, DictSubTitle } from "../../components/dict";
+import { enterIcon, leftChevron } from "../../constant/IMAGE_PATH";
 import { IndexContext } from "..";
-import { DictForm, DictSound, DictSummary } from "../../components/dict/view";
+import { DictForm, DictHorizontal, DictSound, DictSummary } from "../../components/dict/view";
 import { ReadyButton, ReadyLink } from "../../components/ready";
 
 function getRandomArbitrary(min: number, max: number) {
@@ -80,8 +80,7 @@ export const PlayPage = () => {
 
   const Counter = ({ hanja, text }: { hanja: string; text: string }) => {
     return <>
-      <Text text={hanja} x={200} y={400} rotation={getRandomArbitrary(-0.5, 0.5)} anchor={0.5} style={new TextStyle({ align: "center", fontSize: "80px", fill: "#000000", fontFamily: "hanyang" })} />
-      <Text text={text} x={300} y={400} anchor={0.5} style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "jamsil", fontWeight: "800" })} />
+      <Text text={hanja} x={300} y={300} anchor={0.5} style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })} />
     </>
   }
 
@@ -103,7 +102,7 @@ export const PlayPage = () => {
         <PlayStatBlock>
           <ReadyLink to={"/ready/acidrain"}><ReadyButton>이전으로</ReadyButton></ReadyLink>
           <p>
-            <SubTitle>{ difficulty < 120 ? "😱 난이도: pH1" : difficulty < 180 ? "😨 난이도: pH4" : difficulty < 240 ? "😐 난이도: pH7" : difficulty < 300 ? "😊 난이도: pH10" : "😆 난이도: pH13" }</SubTitle>
+            <SubTitle>{ difficulty < 120 ? "😱 매우 어려움" : difficulty < 180 ? "😨 어려움" : difficulty < 240 ? "😐 보통" : difficulty < 300 ? "😊 쉬움" : "😆 매우 쉬움" }</SubTitle>
           </p>
         <p>
           <SubTitle>❌ 틀린 개수: {afterStatWrong.length}/5</SubTitle>
@@ -178,7 +177,14 @@ export const PlayPage = () => {
           onSubmit={handleSubmit(async (data) => {
             let result: string | null = null;
             for await (const [key, value] of Object.entries(hanjas).toReversed()) {
-              if (value.y < 750 && value.sound.includes(data.answer?.trim() ?? "")) {
+              const allowedAnswer: string[] = []
+              value.sound.forEach((sound) => {
+                allowedAnswer.push(sound);
+                if (sound.split(" ").length > 1) {
+                  allowedAnswer.push(sound.split(" ").at(-1) as string);
+                }
+              });
+              if (value.y < 550 && allowedAnswer.includes(data.answer?.trim() ?? "")) {
                 result = key;
               }
             }
@@ -208,7 +214,7 @@ export const PlayPage = () => {
         </PlayInputFieldBlock>
     </>)
 
-    const survives = Object.entries(hanjas).filter(([k, v]) => v.y >= 750).map(([k, v]) => k)
+    const survives = Object.entries(hanjas).filter(([k, v]) => v.y >= 550).map(([k, v]) => k)
     setAfterStatWrong(survives.map(survive => hanjas[survive]))
     setHanjasElement((cur) => {
       let item: Record<string, JSX.Element> = {};
@@ -250,57 +256,75 @@ export const PlayPage = () => {
       }
 
       setIsAfter(true);
-      setAfterPanel(<>
-        <PlayAfterPanel>
-          <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
-          <PlayAfterButtonSet>
-            <PlayAfterButton onClick={() => {
-              localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty }))
-              navigate(`/play`);
-              location.reload();
-            }}>다시 하기</PlayAfterButton>
-            <PlayAfterButton onClick={() => navigate("/")}>홈으로</PlayAfterButton>
-          </PlayAfterButtonSet>
-          <PlayAfterSubTitle>⏱️ 시간: {(count - 200) / 100}초</PlayAfterSubTitle>
-          <PlayAfterSubTitle>📊 통계</PlayAfterSubTitle>
-          <p>
-            <details>
-              <PlayAfterSummary>틀린 한자</PlayAfterSummary>
-              <div>
-                {Object.values(wrongItems).map(item => {
-                  return (
-                    <>
-                      <div>
-                        <DictForm>{item.dict.form.join(",")}</DictForm>
-                        <DictSound>{item.dict.sound.join(", ")}</DictSound>
-                        <DictCount>({item.count})</DictCount>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-            </details>
-          </p>
-          <p>
-            <details>
-              <PlayAfterSummary>맞춘 한자</PlayAfterSummary>
-              <div>
-                {Object.values(rightItems).map(item => {
-                  return (
-                    <>
-                      <div>
-                        <DictForm>{item.dict.form.join(",")}</DictForm>
-                        <DictSound>{item.dict.sound.join(", ")}</DictSound>
-                        <DictCount>({item.count})</DictCount>
-                      </div>
-                    </>
-                  );
-                })}
-              </div>
-            </details>
-          </p>
-        </PlayAfterPanel>
-      </>)
+      setAfterPanel(
+        <>
+          <PlayAfterPanel>
+            <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
+            <PlayAfterButtonSet>
+              <PlayAfterButton
+                onClick={() => {
+                  localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty }));
+                  navigate(`/play`);
+                  location.reload();
+                }}
+              >
+                다시 하기
+              </PlayAfterButton>
+              <PlayAfterButton onClick={() => navigate("/")}>홈으로</PlayAfterButton>
+            </PlayAfterButtonSet>
+            <PlayAfterSubTitle>⏱️ 시간: {(count - 200) / 100}초</PlayAfterSubTitle>
+            <PlayAfterSubTitle>📊 통계</PlayAfterSubTitle>
+            <p>
+              <details>
+                <DictSummary>
+                  <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
+                  <DictSubTitle>
+                    틀린 한자 <span>({Object.values(wrongItems).length})</span>
+                  </DictSubTitle>
+                </DictSummary>
+                <div>
+                  {Object.values(wrongItems).map((item) => {
+                    return (
+                      <>
+                        <DictHorizontal />
+                        <div>
+                          <DictForm>{item.dict.form.join(",")}</DictForm>
+                          <DictSound>{item.dict.sound.join(", ")}</DictSound>
+                          <DictCount>({item.count})</DictCount>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+              </details>
+            </p>
+            <p>
+              <details>
+                <DictSummary>
+                  <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
+                  <DictSubTitle>
+                    맞춘 한자 <span>({Object.values(rightItems).length})</span>
+                  </DictSubTitle>
+                </DictSummary>
+                <div>
+                  {Object.values(rightItems).map((item) => {
+                    return (
+                      <>
+                        <DictHorizontal />
+                        <div>
+                          <DictForm>{item.dict.form.join(",")}</DictForm>
+                          <DictSound>{item.dict.sound.join(", ")}</DictSound>
+                          <DictCount>({item.count})</DictCount>
+                        </div>
+                      </>
+                    );
+                  })}
+                </div>
+              </details>
+            </p>
+          </PlayAfterPanel>
+        </>
+      );
     }
   }, [afterStatWrong, count])
 
@@ -315,7 +339,7 @@ export const PlayPage = () => {
     <>
       <PlayMain>
         {/* @ts-ignore */}
-        <Stage ref={stageRef} style={{zIndex: 1001}} width={600} height={800} options={{ backgroundColor: "#df5555", backgroundAlpha: stageBackgroundAlpha, antialias: true }}>
+        <Stage ref={stageRef} style={{zIndex: 1001, borderRadius: "2rem"}} width={600} height={600} options={{ backgroundColor: "#df5555", backgroundAlpha: stageBackgroundAlpha, antialias: true }}>
           {Object.values(hanjasElement)}
           {timeText}
         </Stage>

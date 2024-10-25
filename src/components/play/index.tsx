@@ -37,7 +37,7 @@ export const Label = styled.span`
 export const PlayMain = styled(Main)`
   position: relative;
   min-width: 600px;
-  min-height: 900px;
+  min-height: 700px;
   overflow: visible;
 `
 

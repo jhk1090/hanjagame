@@ -4,9 +4,14 @@ import { Link } from "react-router-dom";
 import { IDict } from "../../database/busu";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain, DictSubTitle, DictTitle } from "../../components/dict";
 import { InfoLink } from "../../components/info";
-import { leftChevron } from "../../constant/IMAGE_PATH";
+import { leftChevron, plusIcon } from "../../constant/IMAGE_PATH";
+import { IndexContext } from "..";
 
 export const DictPage = () => {
+  const { setColorPair } = React.useContext(IndexContext);
+  React.useEffect(()=>{
+    setColorPair(["#d6b547", "#ffeac4"])    
+  }, [])
   const [initPage, setInitPage] = React.useState<JSX.Element>(<></>);
 
   React.useEffect(() => {
@@ -21,15 +26,16 @@ export const DictPage = () => {
           <DictLink to={".."}><DictButton><DictImage src={leftChevron} />이전으로</DictButton></DictLink>
           <DictArticle>
             <DictSubTitle>기본 사전 <span>({Object.keys(dictCommon).length})</span></DictSubTitle>
-            {Object.values(dictCommon).map((dict) => (
-              <Link to={`${dict.name}`}>
-                <Button>{dict.name}</Button>
+            {Object.entries(dictCommon).map(([key, value]) => (
+              <Link to={`view/${key}`}>
+                <DictButton>{value.name}</DictButton>
               </Link>
             ))}
             <DictSubTitle>사용자 추가 사전 <span>({Object.keys(dictCustom).length})</span></DictSubTitle>
-            {Object.values(dictCustom).map((dict) => (
-              <Link to={`${dict.name}`}>
-                <Button>{dict.name}</Button>
+            <DictLink to={"new"}><DictButton><DictImage src={plusIcon} />사전 추가</DictButton></DictLink>
+            {Object.entries(dictCustom).map(([key, value]) => (
+              <Link to={`view/${key}`}>
+                <DictButton>{value.name}</DictButton>
               </Link>
             ))}
           </DictArticle>

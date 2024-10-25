@@ -10,6 +10,8 @@ import { ReadyPage } from "./ready";
 import { ReadyAcidrainPage } from "./ready/acidrain";
 import { PlayPage } from "./play";
 import styled, { createGlobalStyle } from "styled-components";
+import { DictNewPage } from "./dict/new";
+import { v4 } from "uuid";
 
 interface IAnimateBackground {
   $primary: string;
@@ -231,7 +233,7 @@ const IndexPage = () => {
             <span>字</span>
           </Logo>
           <Article>
-            <TitleLink to="/ready">
+            <TitleLink to="/ready/acidrain">
               <TitleButton style={{fontSize: "7rem", gap: "2rem"}}>
                 <TitleButtonLabel>樂</TitleButtonLabel>놀이 시작
               </TitleButton>
@@ -265,7 +267,7 @@ export default function App() {
     const common = localStorage.getItem("dict-common");
     const custom = localStorage.getItem("dict-custom");
     if (common === null) {
-      localStorage.setItem("dict-common", JSON.stringify({ 부수: busu }));
+      localStorage.setItem("dict-common", JSON.stringify({ [`부수-${v4()}`]: busu }));
     }
     if (custom === null) {
       localStorage.setItem("dict-custom", JSON.stringify({}));
@@ -302,13 +304,20 @@ export default function App() {
               }
             >
               <Route index element={<DictPage />} />
-              <Route path=":dictName" element={<DictViewPage />} />
+              <Route
+                path="view"
+                element={
+                  <>
+                    <Outlet />
+                  </>
+                }
+              >
+                <Route path=":dictName" element={<DictViewPage />} />
+              </Route>
+              <Route path="new" element={<DictNewPage />} />
             </Route>
             <Route path="/info" element={<InfoPage />} />
-            <Route
-              path="/ready"
-              element={<IndexReadyPage />}
-            >
+            <Route path="/ready" element={<IndexReadyPage />}>
               <Route index element={<ReadyPage />} />
               <Route path="acidrain" element={<ReadyAcidrainPage />} />
             </Route>
@@ -319,7 +328,6 @@ export default function App() {
     </>
   );
 }
-
 
 const IndexReadyPage = () => {
   const { setColorPair } = React.useContext(IndexContext);

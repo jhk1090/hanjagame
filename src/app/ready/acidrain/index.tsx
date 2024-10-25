@@ -34,7 +34,7 @@ const DictSelectionPage = () => {
         <ReadyDescription>게임에서 사용될 사전을 선택하세요. 사전을 선택하면 그 사전 내에 있는 한자가 떨어지게 됩니다.</ReadyDescription>
         <ReadyButton
           onClick={() => {
-            navigate("..");
+            navigate("/");
           }}
         >
           <ReadyImage src={leftChevron} />
@@ -111,18 +111,22 @@ const DictlineSelectionPage = () => {
               Object.keys(data).forEach((group) => {
                 data[group].dict.forEach((value, index) => {
                   if (value) {
-                    // 음만 차용
-                    const beAdded = dict.content[group][index];
-                    const soundList: string[] = [];
-                    beAdded.sound.forEach((sound) => {
-                      soundList.push(sound);
-                      if (sound.split(" ").length > 1) {
-                        soundList.push(sound.split(" ").at(-1) as string);
-                      }
-                    });
-                    beAdded.sound = soundList;
-                    dictAcc.push(beAdded);
+                    dictAcc.push(dict.content[group][index]);
                   }
+                  // if (value) {
+                  //   // 음만 차용
+                  //   const data = dict.content[group][index];
+                  //   const soundList: string[] = [];
+                  //   data.sound.forEach(sound => {
+                  //     soundList.push(sound);
+                  //     if (sound.split(" ").length > 1) {
+                  //       soundList.push(sound.split(" ").at(-1) as string);
+                  //     }
+                  //   })
+                  //   console.log(soundList)
+                  //   data.sound = soundList;
+                  //   dictAcc.push(data);
+                  // }
                 });
               });
 
@@ -214,6 +218,8 @@ const GameConfigPage = () => {
   type TDictConfig = { difficulty: number; };
   const { unregister, register, setValue, getValues, handleSubmit } = useForm<TDictConfig>();
 
+  console.log(dictConfig)
+
   return (
     <>
       <PageTitle title="놀이 설정하기 | 산성비 놀이 | 한자 마당" />
@@ -231,7 +237,7 @@ const GameConfigPage = () => {
           이전으로
         </ReadyButton>
         <ReadyArticle>
-          <SubTitle>난이도 (pH)</SubTitle>
+          <SubTitle>난이도</SubTitle>
           <form
             onSubmit={handleSubmit((data) => {
               localStorage.setItem("dict-play", JSON.stringify({ key: dictConfig, difficulty: data.difficulty }))
@@ -239,11 +245,11 @@ const GameConfigPage = () => {
             })}
           >
             <ReadyGameConfigSelect {...register("difficulty")} defaultValue={180}>
-              <option value={300}>😆 매우 쉬움 (pH13)</option>
-              <option value={240}>😊 쉬움 (pH10)</option>
-              <option value={180}>😐 보통 (pH7)</option>
-              <option value={120}>😨 어려움 (pH4)</option>
-              <option value={60}>😱 매우 어려움 (pH1)</option>
+              <option value={300}>😆 매우 쉬움</option>
+              <option value={240}>😊 쉬움</option>
+              <option value={180}>😐 보통</option>
+              <option value={120}>😨 어려움</option>
+              <option value={60}>😱 매우 어려움</option>
             </ReadyGameConfigSelect>
             <ReadyButton type="submit">시작</ReadyButton>
           </form>
