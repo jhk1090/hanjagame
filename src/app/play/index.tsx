@@ -279,7 +279,7 @@ export const PlayPage = () => {
                 <DictSummary>
                   <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
                   <DictSubTitle>
-                    틀린 한자 <span>({Object.values(wrongItems).length})</span>
+                    틀린 한자 <span>({Object.values(wrongItems).length}개)</span>
                   </DictSubTitle>
                 </DictSummary>
                 <div>
@@ -288,9 +288,9 @@ export const PlayPage = () => {
                       <>
                         <DictHorizontal />
                         <div>
-                          <DictForm>{item.dict.form.join(",")}</DictForm>
+                          <DictForm>{item.dict.form.join("")}</DictForm>
                           <DictSound>{item.dict.sound.join(", ")}</DictSound>
-                          <DictCount>({item.count})</DictCount>
+                          <DictCount>({item.count}번)</DictCount>
                         </div>
                       </>
                     );
@@ -303,7 +303,7 @@ export const PlayPage = () => {
                 <DictSummary>
                   <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
                   <DictSubTitle>
-                    맞춘 한자 <span>({Object.values(rightItems).length})</span>
+                    맞춘 한자 <span>({Object.values(rightItems).length}개)</span>
                   </DictSubTitle>
                 </DictSummary>
                 <div>
@@ -312,9 +312,9 @@ export const PlayPage = () => {
                       <>
                         <DictHorizontal />
                         <div>
-                          <DictForm>{item.dict.form.join(",")}</DictForm>
+                          <DictForm>{item.dict.form.join("")}</DictForm>
                           <DictSound>{item.dict.sound.join(", ")}</DictSound>
-                          <DictCount>({item.count})</DictCount>
+                          <DictCount>({item.count}번)</DictCount>
                         </div>
                       </>
                     );

@@ -100,7 +100,8 @@ export const PlayAfterSummary = styled.summary`
 `
 
 export const DictCount = styled(DictSound)`
-  font-size: 4.5rem;
+  font-size: 3.5rem;
+  font-style: italic;
 `
 
 export const PlayAfterButton = styled(ReadyButton)`

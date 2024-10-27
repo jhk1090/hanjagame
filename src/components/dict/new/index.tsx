@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { Title } from "../..";
+import { DictButton, DictImage } from "..";
+import React from "react";
+import { leftChevron } from "../../../constant/IMAGE_PATH";
 
 export const DictNewInput = styled.input`
   all: unset;
@@ -13,6 +16,7 @@ export const DictNewInput = styled.input`
 export const DictNewFieldset = styled.fieldset`
   border: 3px solid #40404090;
   border-radius: 1rem;
+  padding: .5rem;
 `
 
 export const DictNewLegend = styled.legend`
@@ -31,8 +35,64 @@ export const DictNewHanjaSpan = styled.span`
 `
 
 export const DictNewError = styled.span`
+  all: unset;
   font-size: 3rem;
   color: #ff4747;
+`;
+
+export const DictNewGroupBox = styled.details`
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff30;
+  padding: 1.5rem;
+  gap: 1rem;
+`
+
+export const DictNewGroupBoxTop = styled.summary`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const DictNewGroupBoxMain = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+`
+
+export const DictNewGroupBoxTitle = styled.h2`
+  margin: 1rem 0 1rem 0;
+  font-size: 4.5rem;
+`
+
+export const DictNewHanjaBox = styled.div`
+  all: unset;
+  border: 3px solid #00000070;
+  border-radius: 1rem;
+  background-color: #ffffff30;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+`
+
+export const DictNewHanjaBoxMain = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-wrap: wrap;
+`
+
+export const DictNewHanjaBoxMainUpper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+`
+
+export const DictNewHanjaBoxSidebar = styled.div`
+
 `
 
 export const DictNewCMInput = styled(DictNewInput)`
@@ -62,9 +122,8 @@ export const DictNewCMSelect = styled.select`
 
 export const DictNewSector = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 2rem;
+  flex-direction: column;
+  gap: 1rem;
 `
 
 export const DictNewTitle = styled(Title)`
@@ -85,3 +144,75 @@ export const DictNewTitle = styled(Title)`
     font-size: 6rem;
   }
 `
+
+export const DictALButton = styled(DictButton)`
+  font-size: 4rem;
+`;
+
+export const DictALImage = styled(DictImage)`
+  width: 5rem;
+`
+
+const StyledAccordion = styled.div<{ $length: number; }>`
+  all: unset;
+  border: 3px solid #00000070;
+  border-radius: 1rem;
+  background-color: #ffffff30;
+  display: flex;
+  flex-direction: column;
+
+  summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .content-wrapper {
+    overflow: hidden;
+  }
+  
+  .content {
+    padding: 1.5rem;
+    transition: 0.3s ease;
+    margin-top: -${(props) => props.$length * 200}px;
+    opacity: 0;
+  }
+
+  details[open] + .content-wrapper > .content {
+    margin-top: 20px;
+    opacity: 1;
+  }
+
+  .arrow {
+    transition: transform 0.3s;
+    transform: rotate(270deg);
+  }
+
+  details[open] .arrow {
+    transform: rotate(90deg);
+  }
+`;
+
+export const Accordion = (props: { top: JSX.Element, datalines: string[]; open: boolean; onToggle: () => void, children: JSX.Element }) => {
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  return (
+    <>
+      <StyledAccordion $length={props.datalines.length}>
+        <DictNewGroupBox onToggle={props.onToggle} open={props.open}>
+          <DictNewGroupBoxTop>
+            <div style={{display: "flex", flexDirection: "row", gap: "4rem"}}>
+              <DictImage className="arrow" src={leftChevron} />
+              <DictNewGroupBoxTitle>그룹</DictNewGroupBoxTitle>
+            </div>
+            {props.top}
+          </DictNewGroupBoxTop>
+        </DictNewGroupBox>
+        <div className={"content-wrapper"}>
+          <div className={"content"} ref={contentRef}>
+            {props.children}
+          </div>
+        </div>
+      </StyledAccordion>
+    </>
+  );
+}

@@ -57,7 +57,7 @@ export const DictViewPage = () => {
                       <DictHorizontal />
                       <Dict>
                         <div>
-                          <DictForm>{dictLine.form.join(",")}</DictForm>
+                          <DictForm>{dictLine.form.join("")}</DictForm>
                           <DictSound>{dictLine.sound.join(", ")}</DictSound>
                         </div>
                         <div>

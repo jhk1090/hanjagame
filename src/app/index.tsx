@@ -267,7 +267,7 @@ export default function App() {
     const common = localStorage.getItem("dict-common");
     const custom = localStorage.getItem("dict-custom");
     if (common === null) {
-      localStorage.setItem("dict-common", JSON.stringify({ [`부수-${v4()}`]: busu }));
+      localStorage.setItem("dict-common", JSON.stringify({ [`${v4()}`]: busu }));
     }
     if (custom === null) {
       localStorage.setItem("dict-custom", JSON.stringify({}));
