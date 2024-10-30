@@ -75,7 +75,7 @@ export const PlayAfterPanel = styled.div`
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  background-color: rgba(255, 255, 255, 0.75);
+  background-color: rgba(248, 185, 126, 0.9);
   border-radius: 2rem;
   width: 600px;
   max-height: 100vh;
@@ -105,7 +105,7 @@ export const DictCount = styled(DictSound)`
 `
 
 export const PlayAfterButton = styled(ReadyButton)`
-  background-color: #afafaf90;
+  background-color: #ffffff40;
   padding: 2rem 5rem 2rem 5rem;
 `
 

@@ -10,6 +10,7 @@ import { checkIcon, closeIcon, leftChevron, plusIcon } from "../../../constant/I
 import { DictImage, DictSubTitle } from "../../../components/dict";
 import { ReadyDictlineSelectionButtonSet, ReadyDictlineSelectionSubTitle, ReadyDictlineSelectionWarning } from "../../../components/ready/acidrain/DictlineSelection";
 import { ReadyGameConfigSelect } from "../../../components/ready/acidrain/GameConfig";
+import { DIFFICULTY_EASY, DIFFICULTY_HARD, DIFFICULTY_NORMAL, DIFFICULTY_VERY_EASY, DIFFICULTY_VERY_HARD } from "../../../constant/DIFFICULTY";
 
 const ReadyAcidrainContext = React.createContext<{
   dict: IDict | undefined;
@@ -244,12 +245,12 @@ const GameConfigPage = () => {
               navigate(`/play/acidrain`);
             })}
           >
-            <ReadyGameConfigSelect {...register("difficulty")} defaultValue={3}>
-              <option value={3.8}>😆 매우 쉬움</option>
-              <option value={3.1}>😊 쉬움</option>
-              <option value={2.4}>😐 보통</option>
-              <option value={1.7}>😨 어려움</option>
-              <option value={1}>😱 매우 어려움</option>
+            <ReadyGameConfigSelect {...register("difficulty")} defaultValue={DIFFICULTY_NORMAL}>
+              <option value={DIFFICULTY_VERY_EASY}>😆 매우 쉬움</option>
+              <option value={DIFFICULTY_EASY}>😊 쉬움</option>
+              <option value={DIFFICULTY_NORMAL}>😐 보통</option>
+              <option value={DIFFICULTY_HARD}>😨 어려움</option>
+              <option value={DIFFICULTY_VERY_HARD}>😱 매우 어려움</option>
             </ReadyGameConfigSelect>
             <ReadyButton type="submit">시작</ReadyButton>
           </form>

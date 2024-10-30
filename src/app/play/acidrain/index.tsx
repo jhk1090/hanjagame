@@ -12,6 +12,7 @@ import { IndexContext } from "../..";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { enterIcon } from "../../../constant/IMAGE_PATH";
+import { DIFFICULTY_EASY, DIFFICULTY_HARD, DIFFICULTY_NORMAL, DIFFICULTY_VERY_HARD } from "../../../constant/DIFFICULTY";
 
 function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
@@ -27,11 +28,12 @@ export const PlayAcidrainPage = () => {
   const { setColorPair } = React.useContext(IndexContext);
   const navigate = useNavigate();
 
-  const [stageKey, setStageKey] =  React.useState<IData[]>([]);
+  const [stageKey, setStageKey] = React.useState<IData[]>([]);
   const [stageDifficulty, setStageDifficulty] = React.useState<number>(0);
   const [isInit, setIsInit] = React.useState(false);
+  const [isCountdownInit, setIsCountdownInit] = React.useState(false);
   const [isAfter, setIsAfter] = React.useState(false);
-  const [hanjas, setHanjas] = React.useState<{ id: string; text: string; data: IData; x: number; y: number; speed: number; }[]>([]);
+  const [hanjas, setHanjas] = React.useState<{ id: string; text: string; data: IData; x: number; y: number; speed: number }[]>([]);
   const [count, setCount] = React.useState(0);
   const [stageBackgroundAlpha, setStageBackgroundAlpha] = React.useState(0.3);
 
@@ -40,86 +42,109 @@ export const PlayAcidrainPage = () => {
 
   const [afterPanel, setAfterPanel] = React.useState(<></>);
   const [inputElement, setInputElement] = React.useState(<></>);
+  const [timerElement, setTimerElement] = React.useState(<></>);
 
   const generateHanja = () => {
-    const data = stageKey[getRandomInt(0, stageKey.length - 1)]
-    const text = data.form[getRandomInt(0, data.form.length - 1)]
+    const data = stageKey[getRandomInt(0, stageKey.length - 1)];
+    const text = data.form[getRandomInt(0, data.form.length - 1)];
     const newHanja = {
       id: v4(),
       text,
       data,
       x: getRandomArbitrary(0, 600 - text.length * 50),
       y: 0,
-      speed: .25
-    }
-    setCount(cur => cur++);
-    setHanjas(prev => [...prev, newHanja])
-  }
+      speed: 0.25,
+    };
+    setHanjas((prev) => [...prev, newHanja]);
+  };
+
   const updateTimer = () => {
-    setCount(cur => cur += 1);
-  }
+    setCount((cur) => { 
+      if (!isCountdownInit && cur > 350) {
+        setIsCountdownInit(true)
+      }
+      return cur + 1
+    });
+  };
   const updateHanjas = () => {
     setHanjas((prev) => {
-      const reflected = prev.map((hanja) => ({ ...hanja, y: hanja.y + hanja.speed }))
-      const filtered = reflected.filter(hanja => hanja.y < 550);
-      setAfterStatWrong(prev => [...prev, ...reflected.filter(v => !filtered.map(v => v.id).includes(v.id)).map(v => v.data)]);
+      const reflected = prev.map((hanja) => ({ ...hanja, y: hanja.y + hanja.speed }));
+      const filtered = reflected.filter((hanja) => hanja.y < 550);
+      setAfterStatWrong((prev) => [...prev, ...reflected.filter((v) => !filtered.map((v) => v.id).includes(v.id)).map((v) => v.data)]);
       return filtered;
     });
-  }
+  };
 
   React.useEffect(() => {
-    const dictPlay = localStorage.getItem("dict-play")
+    const dictPlay = localStorage.getItem("dict-play");
     if (dictPlay !== null) {
-      setStageKey(JSON.parse(dictPlay).key)
-      setStageDifficulty(JSON.parse(dictPlay).difficulty)
-      setIsInit(true)
+      setStageKey(JSON.parse(dictPlay).key);
+      setStageDifficulty(JSON.parse(dictPlay).difficulty);
+      setIsInit(true);
     }
-  }, [])
-  
+  }, []);
+
   React.useEffect(() => {
     if (!isInit || isAfter) {
       return;
     }
 
-    const interval = setInterval(generateHanja, stageDifficulty * 1000);
     const timer = setInterval(updateTimer, 10);
-    const animation = setInterval(updateHanjas, 4);
+    if (isCountdownInit) {
+      const interval = setInterval(generateHanja, stageDifficulty * 1000);
+      const animation = setInterval(updateHanjas, 4);
 
-    return () => {
-      clearInterval(interval);
-      clearInterval(timer);
-      clearInterval(animation);
+      return () => {
+        clearInterval(timer);
+        clearInterval(interval);
+        clearInterval(animation);
+      };
     }
-  }, [isInit, isAfter])
+    return () => clearInterval(timer);
+  }, [isInit, isAfter, isCountdownInit]);
 
   React.useEffect(() => {
-    setStageBackgroundAlpha(afterStatWrong.length === 0 ? 0.3 : afterStatWrong.length === 1 ? 0.4 : afterStatWrong.length === 2 ? 0.5 : afterStatWrong.length === 3 ? 0.6 : afterStatWrong.length === 4 ? 0.7 : afterStatWrong.length === 5 ? 0.8 : 0.9)
-  }, [afterStatWrong])
+    setStageBackgroundAlpha(
+      afterStatWrong.length === 0
+        ? 0.3
+        : afterStatWrong.length === 1
+        ? 0.4
+        : afterStatWrong.length === 2
+        ? 0.5
+        : afterStatWrong.length === 3
+        ? 0.6
+        : afterStatWrong.length === 4
+        ? 0.7
+        : afterStatWrong.length === 5
+        ? 0.8
+        : 0.9
+    );
+  }, [afterStatWrong]);
 
   React.useEffect(() => {
     //@ts-ignore
-    window.app = stageRef.current
+    window.app = stageRef.current;
     //@ts-ignore
     stageRef.current.app.renderer.backgroundAlpha = stageBackgroundAlpha;
-  }, [stageBackgroundAlpha])
+  }, [stageBackgroundAlpha]);
 
   React.useEffect(() => {
     if (afterStatWrong.length === 5) {
-      const wrongItems: Record<string, { dict: IData; count: number; }> = {}
+      const wrongItems: Record<string, { dict: IData; count: number }> = {};
       for (const item of afterStatWrong) {
         if (Object.keys(wrongItems).includes(item.key)) {
           wrongItems[item.key].count++;
         } else {
-          wrongItems[item.key] = { dict: item, count: 1 }
+          wrongItems[item.key] = { dict: item, count: 1 };
         }
       }
 
-      const rightItems: Record<string, { dict: IData; count: number; }> = {}
+      const rightItems: Record<string, { dict: IData; count: number }> = {};
       for (const item of afterStatRight) {
         if (Object.keys(rightItems).includes(item.key)) {
           rightItems[item.key].count++;
         } else {
-          rightItems[item.key] = { dict: item, count: 1 }
+          rightItems[item.key] = { dict: item, count: 1 };
         }
       }
 
@@ -130,10 +155,10 @@ export const PlayAcidrainPage = () => {
         </>
       );
     }
-  }, [afterStatWrong, count])
+  }, [afterStatWrong, count]);
 
-  const { handleSubmit, register, resetField, setValue } = useForm<{ answer: string; }>();
-  
+  const { handleSubmit, register, resetField, setValue } = useForm<{ answer: string }>();
+
   React.useEffect(() => {
     if (isAfter) {
       return;
@@ -151,7 +176,7 @@ export const PlayAcidrainPage = () => {
                 x: number;
                 y: number;
                 speed: number;
-            } | null = null;
+              } | null = null;
               for (const hanja of hanjas.toReversed()) {
                 const allowedAnswer: string[] = [];
                 hanja.data.sound.forEach((sound) => {
@@ -192,9 +217,45 @@ export const PlayAcidrainPage = () => {
       navigate("/");
     }
 
-    localStorage.removeItem("dict-play")
-    setColorPair(["#d68c47", "#ffe7c4"])
-  }, [isInit])
+    localStorage.removeItem("dict-play");
+    setColorPair(["#d68c47", "#ffe7c4"]);
+  }, [isInit]);
+
+  React.useEffect(() => {
+    if (50 <= count && count <= 149) {
+      setTimerElement(
+        <Text
+          text={"三"}
+          x={300}
+          y={300}
+          anchor={0.5}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+        />
+      );
+    } else if (150 <= count && count <= 249) {
+      setTimerElement(
+        <Text
+          text={"二"}
+          x={300}
+          y={300}
+          anchor={0.5}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+        />
+      );
+    } else if (250 <= count && count <= 349) {
+      setTimerElement(
+        <Text
+          text={"一"}
+          x={300}
+          y={300}
+          anchor={0.5}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+        />
+      );
+    } else {
+      setTimerElement(<></>);
+    }
+  }, [count]);
 
   const stageRef = useRef<Stage>(null);
   return (
@@ -216,6 +277,7 @@ export const PlayAcidrainPage = () => {
               style={new TextStyle({ align: "center", fontSize: "50px", fill: "#000", stroke: "#fff", strokeThickness: 2, fontFamily: "hanyang" })}
             />
           ))}
+          {timerElement}
         </Stage>
         <PlayStatBlock>
           <ReadyLink to={"/ready/acidrain"}>
@@ -223,13 +285,13 @@ export const PlayAcidrainPage = () => {
           </ReadyLink>
           <p>
             <SubTitle>
-              {stageDifficulty < 120
+              {stageDifficulty <= DIFFICULTY_VERY_HARD
                 ? "😱 매우 어려움"
-                : stageDifficulty < 180
+                : stageDifficulty <= DIFFICULTY_HARD
                 ? "😨 어려움"
-                : stageDifficulty < 240
+                : stageDifficulty <= DIFFICULTY_NORMAL
                 ? "😐 보통"
-                : stageDifficulty < 300
+                : stageDifficulty <= DIFFICULTY_EASY
                 ? "😊 쉬움"
                 : "😆 매우 쉬움"}
             </SubTitle>
@@ -238,7 +300,7 @@ export const PlayAcidrainPage = () => {
             <SubTitle>❌ 틀린 개수: {afterStatWrong.length}/5</SubTitle>
           </p>
           <p>
-            <SubTitle>⏱️ { (count - 200) / 100 < 0 ? "0초" : (count - 200) / 100 + "초"}</SubTitle>
+            <SubTitle>⏱️ {(count - 350) / 100 < 0 ? "0초" : (count - 350) / 100 + "초"}</SubTitle>
           </p>
         </PlayStatBlock>
         {afterPanel}
@@ -246,4 +308,4 @@ export const PlayAcidrainPage = () => {
       </PlayMain>
     </>
   );
-}
+};
