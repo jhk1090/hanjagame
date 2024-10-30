@@ -12,6 +12,7 @@ import { PlayPage } from "./play";
 import styled, { createGlobalStyle } from "styled-components";
 import { DictNewPage } from "./dict/new";
 import { v4 } from "uuid";
+import { PlayAcidrainPage } from "./play/acidrain";
 
 interface IAnimateBackground {
   $primary: string;
@@ -321,7 +322,10 @@ export default function App() {
               <Route index element={<ReadyPage />} />
               <Route path="acidrain" element={<ReadyAcidrainPage />} />
             </Route>
-            <Route path="/play" element={<PlayPage />} />
+            <Route path="/play" element={<><Outlet /></>}>
+              <Route index element={<PlayPage />} />
+              <Route path="acidrain" element={<PlayAcidrainPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
       </IndexContext.Provider>

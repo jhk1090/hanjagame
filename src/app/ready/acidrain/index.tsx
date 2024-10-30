@@ -241,15 +241,15 @@ const GameConfigPage = () => {
           <form
             onSubmit={handleSubmit((data) => {
               localStorage.setItem("dict-play", JSON.stringify({ key: dictConfig, difficulty: data.difficulty }))
-              navigate(`/play`);
+              navigate(`/play/acidrain`);
             })}
           >
-            <ReadyGameConfigSelect {...register("difficulty")} defaultValue={180}>
-              <option value={300}>😆 매우 쉬움</option>
-              <option value={240}>😊 쉬움</option>
-              <option value={180}>😐 보통</option>
-              <option value={120}>😨 어려움</option>
-              <option value={60}>😱 매우 어려움</option>
+            <ReadyGameConfigSelect {...register("difficulty")} defaultValue={3}>
+              <option value={3.8}>😆 매우 쉬움</option>
+              <option value={3.1}>😊 쉬움</option>
+              <option value={2.4}>😐 보통</option>
+              <option value={1.7}>😨 어려움</option>
+              <option value={1}>😱 매우 어려움</option>
             </ReadyGameConfigSelect>
             <ReadyButton type="submit">시작</ReadyButton>
           </form>
