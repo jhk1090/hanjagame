@@ -13,6 +13,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import { DictNewPage } from "./dict/new";
 import { v4 } from "uuid";
 import { PlayAcidrainPage } from "./play/acidrain";
+import WebFont from "webfontloader";
 
 interface IAnimateBackground {
   $primary: string;
@@ -224,6 +225,11 @@ const IndexPage = () => {
   const [initPage, setInitPage] = React.useState<JSX.Element>(<></>);
 
   React.useEffect(() => {
+    WebFont.load({
+      custom: {
+        families: ['hanyang', 'jamsil'],
+      },
+    });
     setColorPair(["#d6b547", "#ffeac4"])
     setInitPage(
       <>
