@@ -40,7 +40,7 @@ export const DictNewError = styled.span`
   color: #ff4747;
 `;
 
-export const DictNewGroupBox = styled.details`
+export const DictNewGroupBox = styled.div`
   all: unset;
   display: flex;
   flex-direction: column;
@@ -49,7 +49,7 @@ export const DictNewGroupBox = styled.details`
   gap: 1rem;
 `
 
-export const DictNewGroupBoxTop = styled.summary`
+export const DictNewGroupBoxTop = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -161,7 +161,7 @@ const StyledAccordion = styled.div<{ $length: number; }>`
   display: flex;
   flex-direction: column;
 
-  summary {
+  .summary {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -178,7 +178,7 @@ const StyledAccordion = styled.div<{ $length: number; }>`
     opacity: 0;
   }
 
-  details[open] + .content-wrapper > .content {
+  .open + .content-wrapper > .content {
     margin-top: 20px;
     opacity: 1;
   }
@@ -188,23 +188,25 @@ const StyledAccordion = styled.div<{ $length: number; }>`
     transform: rotate(270deg);
   }
 
-  details[open] .arrow {
+  .open .arrow {
     transform: rotate(90deg);
   }
 `;
 
-export const Accordion = (props: { top: JSX.Element, datalines: string[]; open: boolean; onToggle: () => void, children: JSX.Element }) => {
+export const Accordion = (props: { top: JSX.Element, datalines: string[]; open: boolean; onClick: () => void, children: JSX.Element }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
       <StyledAccordion $length={props.datalines.length}>
-        <DictNewGroupBox onToggle={props.onToggle} open={props.open}>
+        <DictNewGroupBox onClick={props.onClick} className={props.open ? "open" : ""}>
           <DictNewGroupBoxTop>
             <div style={{display: "flex", flexDirection: "row", gap: "4rem"}}>
               <DictImage className="arrow" src={leftChevron} />
               <DictNewGroupBoxTitle>그룹</DictNewGroupBoxTitle>
             </div>
-            {props.top}
+            <div className="summary">
+              {props.top}
+            </div>
           </DictNewGroupBoxTop>
         </DictNewGroupBox>
         <div className={"content-wrapper"}>

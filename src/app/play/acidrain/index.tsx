@@ -12,7 +12,7 @@ import { IndexContext } from "../..";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { enterIcon } from "../../../constant/IMAGE_PATH";
-import { DIFFICULTY_EASY, DIFFICULTY_HARD, DIFFICULTY_NORMAL, DIFFICULTY_VERY_HARD } from "../../../constant/DIFFICULTY";
+import { StatPanel } from "../StatPanel";
 
 function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
@@ -279,30 +279,7 @@ export const PlayAcidrainPage = () => {
           ))}
           {timerElement}
         </Stage>
-        <PlayStatBlock>
-          <ReadyLink to={"/ready/acidrain"}>
-            <ReadyButton>이전으로</ReadyButton>
-          </ReadyLink>
-          <p>
-            <SubTitle>
-              {stageDifficulty <= DIFFICULTY_VERY_HARD
-                ? "😱 매우 어려움"
-                : stageDifficulty <= DIFFICULTY_HARD
-                ? "😨 어려움"
-                : stageDifficulty <= DIFFICULTY_NORMAL
-                ? "😐 보통"
-                : stageDifficulty <= DIFFICULTY_EASY
-                ? "😊 쉬움"
-                : "😆 매우 쉬움"}
-            </SubTitle>
-          </p>
-          <p>
-            <SubTitle>❌ 틀린 개수: {afterStatWrong.length}/5</SubTitle>
-          </p>
-          <p>
-            <SubTitle>⏱️ {(count - 350) / 100 < 0 ? "0초" : (count - 350) / 100 + "초"}</SubTitle>
-          </p>
-        </PlayStatBlock>
+        <StatPanel count={count} afterStatWrong={afterStatWrong} stageDifficulty={stageDifficulty} />
         {afterPanel}
         {inputElement}
       </PlayMain>

@@ -21,9 +21,9 @@ export const InfoPage = () => {
           <InfoArticle>
             <div>
               <InfoSubTitle>
-                v.0.0.1 <span>(24. 10. 13.)</span>
+                v.0.13.1 <span>(24. 10. 30.)</span>
               </InfoSubTitle>
-              <InfoParagraph>최신 버전입니다.</InfoParagraph>
+              <InfoParagraph>게임 시스템이 추가되었습니다</InfoParagraph>
             </div>
             <div>
               <InfoSubTitle>저작권 고지</InfoSubTitle>

@@ -1,6 +1,6 @@
 import React from "react";
 import { Article, Button, Main, PageTitle, SubTitle, Title } from "../../../components";
-import { Dict, DictDefine, DictDescription, DictForm, DictHorizontal, DictSound, DictSummary } from "../../../components/dict/view";
+import { Dict, DictDefine, DictDescription, DictForm, DictHorizontal, DictSound, DictSummary, DictViewAccordion } from "../../../components/dict/view";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { IData, IDict } from "../../../database/busu";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain, DictSubTitle, DictTitle } from "../../../components/dict";
@@ -185,12 +185,12 @@ export const DictAddListPage = () => {
     setTab,
     setDict,
   } = React.useContext(DictNewContext);
-  const { unregister, register, setValue, getValues, handleSubmit, watch, formState, resetField } = useForm<
+  const { unregister, register, setValue, getValues, handleSubmit, watch, formState, resetField, setError, clearErrors } = useForm<
     Record<string, { data: Record<string, { define: string; form: string; sound: string }>; name: string }>
-  >({ defaultValues: dictFormPersist });
+  >({ defaultValues: dictFormPersist, mode: "onChange" });
   const [dictForm, setDictForm] = React.useState(dictFormContext ?? { [uuidv4()]: [uuidv4()] });
   const [groupOpen, setGroupOpen] = React.useState(Object.keys(dictForm).reduce((prev, cur) => ({ ...prev, [cur]: true }), {}) as Record<string, boolean>)
-
+  console.log("error", formState.errors)
   return (
     <>
       <PageTitle title={`사전 목록 추가 | 한자 마당`} />
@@ -221,25 +221,39 @@ export const DictAddListPage = () => {
                 <DictImage src={leftChevron} />
                 이전으로
               </DictButton>
-              <DictButton type="button" onClick={() => {
-                unregister();
-                setDictForm({ [uuidv4()]: [uuidv4()] });
-              }} style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30" }}>
+              <DictButton
+                type="button"
+                onClick={() => {
+                  unregister();
+                  const key = uuidv4();
+                  setDictForm({ [key]: [uuidv4()] });
+                  setGroupOpen({ [key]: true })
+                }}
+                style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30" }}
+              >
                 <DictImage src={closeIcon} /> 초기화
               </DictButton>
               <DictButton type="submit" style={{ backgroundColor: "#5cd83d90", border: "1px solid #5cd83d30" }}>
                 <DictImage src={checkIcon} /> 저장 및 미리보기
               </DictButton>
             </div>
+            {Object.values(formState.errors).length > 0 ? (
+              <>
+                <div style={{ backgroundColor: "#ff474795", borderRadius: "1rem", padding: "1.5rem", marginBottom: "1rem" }}>
+                  <span style={{ fontSize: "4rem", color: "black" }}>필수 입력값을 입력했는지, 값이 중복되지 않았는지 확인하세요!</span>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
             {Object.entries(dictForm).map(([datalinesKey, datalines]) => {
-              console.log(groupOpen[datalinesKey])
               return (
                 <>
                   <Accordion
                     key={datalinesKey}
                     datalines={datalines}
-                    open={true}
-                    onToggle={() => {
+                    open={groupOpen[datalinesKey]}
+                    onClick={() => {
                       setGroupOpen((cur) => ({ ...cur, [datalinesKey]: !groupOpen[datalinesKey] }));
                     }}
                     top={
@@ -249,8 +263,8 @@ export const DictAddListPage = () => {
                           style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30" }}
                           onClick={(e) => {
                             unregister(datalinesKey);
-                            delete groupOpen[datalinesKey]
-                            setGroupOpen(groupOpen)
+                            delete groupOpen[datalinesKey];
+                            setGroupOpen(groupOpen);
                             setDictForm((cur) => {
                               const replaced = { ...cur };
                               delete replaced[datalinesKey];
@@ -265,15 +279,27 @@ export const DictAddListPage = () => {
                     }
                   >
                     <DictNewGroupBoxMain>
-                      <DictNewSector>
+                      <DictNewSector style={{flexDirection: "row", alignItems: "center"}}>
                         <DictNewInput
                           autoComplete="off"
                           placeholder="그룹 이름"
                           style={{ border: formState.errors?.[datalinesKey]?.name?.message ? "2px solid red" : "" }}
-                          {...register(`${datalinesKey}.name`, { required: { value: true, message: "값을 입력해주세요!" } })}
+                          {...register(`${datalinesKey}.name`, {
+                            required: { value: true, message: "이름을 입력해주세요!" },
+                            validate: {
+                              duplicated: (value) =>
+                                !Object.entries(watch())
+                                  .filter(([key, _]) => key !== datalinesKey)
+                                  .map(([_, v]) => v.name)
+                                  .includes(value) || "이미 사용된 이름입니다!",
+                            },
+                            onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                              setValue(`${datalinesKey}.name`, event.currentTarget.value.trim());
+                            }
+                          })}
                         />
+                        <DictNewError>{formState.errors?.[datalinesKey]?.name?.message}</DictNewError>
                       </DictNewSector>
-                      <DictNewError>{formState.errors?.[datalinesKey]?.name?.message ?? ""}</DictNewError>
                       {datalines.map((datalineKey) => {
                         return (
                           <DictNewHanjaBox key={datalineKey}>
@@ -286,9 +312,20 @@ export const DictAddListPage = () => {
                                     style={{ border: formState.errors?.[datalinesKey]?.data?.[datalineKey]?.form?.message ? "2px solid red" : "" }}
                                     {...register(`${datalinesKey}.data.${datalineKey}.form`, {
                                       required: { value: true, message: "값을 입력해주세요!" },
+                                      validate: {
+                                        duplicated: (value) => {
+                                          const dataEntries = Object.entries(Object.values(watch()).map(v => v.data).reduce((prev, cur) => ({ ...prev, ...cur }), {} as Record<string, { form: string; }>))
+                                          const searchArray = dataEntries.filter(([key, _]) => key !== datalineKey).map(([_, v]) => v.form.split(",")).flat().filter(v => v !== "");
+                                          const targetArray = value.split(",").map(v => v.trim()).filter(v => v !== "")
+                                          console.log(searchArray, targetArray, targetArray.some(v => searchArray.includes(v)))
+                                          return targetArray.some(v => searchArray.includes(v)) ? "이미 사용된 값입니다." : true;
+                                        }
+                                      },
+                                      onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setValue(`${datalinesKey}.data.${datalineKey}.form`, Array.from(new Set(event.currentTarget.value.split(",").map(v => v.trim()).filter(v => v !== ""))).join(","));
+                                      }
                                     })}
                                   />
-                                  <DictNewError>{formState.errors?.[datalinesKey]?.data?.[datalineKey]?.form?.message ?? ""}</DictNewError>
                                 </DictNewSector>
                                 <DictNewSector>
                                   <DictNewInput
@@ -297,9 +334,21 @@ export const DictAddListPage = () => {
                                     style={{ border: formState.errors?.[datalinesKey]?.data?.[datalineKey]?.sound?.message ? "2px solid red" : "" }}
                                     {...register(`${datalinesKey}.data.${datalineKey}.sound`, {
                                       required: { value: true, message: "값을 입력해주세요!" },
+                                      onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                                        setValue(
+                                          `${datalinesKey}.data.${datalineKey}.sound`,
+                                          Array.from(
+                                            new Set(
+                                              event.currentTarget.value
+                                                .split(",")
+                                                .map((v) => v.trim())
+                                                .filter((v) => v !== "")
+                                            )
+                                          ).join(",")
+                                        );
+                                      }
                                     })}
                                   />
-                                  <DictNewError>{formState.errors?.[datalinesKey]?.data?.[datalineKey]?.sound?.message ?? ""}</DictNewError>
                                 </DictNewSector>
                               </DictNewHanjaBoxMainUpper>
                               <DictNewSector>
@@ -354,7 +403,9 @@ export const DictAddListPage = () => {
               onClick={(e) => {
                 setDictForm((cur) => {
                   const replaced = { ...cur };
-                  replaced[uuidv4()] = [uuidv4()];
+                  const key = uuidv4();
+                  replaced[key] = [uuidv4()];
+                  setGroupOpen((cur) => ({ ...cur, [key]: true }))
                   return replaced;
                 });
               }}
@@ -388,6 +439,7 @@ export const DictPreviewPage = () => {
     content[datalines.name] = tmp;
   }
   const dictExplicit = { ...dict, content } as IDict;
+  const [groupOpen, setGroupOpen] = React.useState<Record<string, boolean>>(Object.keys(dictExplicit).reduce((prev, cur) => ({ ...prev, [cur]: true }), {}))
 
   return (
     <>
@@ -426,13 +478,21 @@ export const DictPreviewPage = () => {
           </div>
           {Object.keys(dictExplicit.content).map((group) => (
             <>
-              <details>
-                <DictSummary>
-                  <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
-                  <DictSubTitle>
-                    {group} <span>({dictExplicit.content[group].length})</span>
-                  </DictSubTitle>
-                </DictSummary>
+              <DictViewAccordion
+                  key={group}
+                  contents={dictExplicit.content[group]}
+                  open={groupOpen[group]}
+                  onClick={() => {
+                    setGroupOpen((cur) => ({ ...cur, [group]: !groupOpen[group] }));
+                  }}
+                  groupTitle={
+                    <>
+                      <DictSubTitle>
+                        {group} <span>({dictExplicit.content[group].length})</span>
+                      </DictSubTitle>
+                    </>
+                  }
+                >
                 <div>
                   {dictExplicit.content[group].map((dictLine) => (
                     <>
@@ -455,7 +515,7 @@ export const DictPreviewPage = () => {
                     </>
                   ))}
                 </div>
-              </details>
+              </DictViewAccordion>
             </>
           ))}
         </DictArticle>

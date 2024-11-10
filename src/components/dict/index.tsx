@@ -53,6 +53,25 @@ export const DictButton = styled(Button)`
   
 `;
 
+export const DictToViewBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 2rem;
+  border-radius: 1rem;
+  flex-wrap: wrap;
+`
+
+export const DictToView = styled(Button)`
+  padding: 2rem;
+  font-size: 5rem;
+  font-weight: 800;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.4);
+`
+
 export const DictParagraph = styled(Paragraph)`
   margin: 0;
   margin-top: .25rem;

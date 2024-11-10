@@ -30,8 +30,9 @@ export const ReadyDictlineSelectionButtonSet = styled.div`
 export const ReadyDictlineSelectionWarning = styled.span`
   display: block;
   margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
   font-size: 4.5rem;
-  color: #ff4747;
+  background-color: #d83d3d90;
+  padding: 2rem;
+  border-radius: 1rem;
   font-weight: 800;
 `

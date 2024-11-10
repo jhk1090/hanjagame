@@ -1,10 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { DictImage, DictSubTitle } from "../../components/dict";
-import { DictForm, DictHorizontal, DictSound, DictSummary } from "../../components/dict/view";
-import { DictCount, PlayAfterButton, PlayAfterButtonSet, PlayAfterPanel, PlayAfterSubTitle, PlayAfterTitle } from "../../components/play";
-import { leftChevron } from "../../constant/IMAGE_PATH";
+import { DictForm, DictHorizontal, DictSound, DictSummary, DictViewAccordion } from "../../components/dict/view";
+import { DictCount, PlayAfterButton, PlayAfterButtonSet, PlayAfterPanel, PlayAfterSubTitle, PlayAfterTitle, PlayImage } from "../../components/play";
+import { homeIcon, leftChevron, refreshIcon } from "../../constant/IMAGE_PATH";
 import { IData } from "../../database/busu";
 import styled from "styled-components";
+import React from "react";
 
 const AfterPanelBackground = styled.div`
   position: absolute;
@@ -15,10 +16,24 @@ const AfterPanelBackground = styled.div`
   height: 100vh;
   background-color: #00000020;
   z-index: 1003;
-`
+`;
 
-export const AfterPanel = ({ property, difficulty, count, rightItems, wrongItems }: { property: IData[], difficulty: number; count: number; rightItems: Record<string, { dict: IData; count: number; }>; wrongItems: Record<string, { dict: IData; count: number; }> }) => {
+export const AfterPanel = ({
+  property,
+  difficulty,
+  count,
+  rightItems,
+  wrongItems,
+}: {
+  property: IData[];
+  difficulty: number;
+  count: number;
+  rightItems: Record<string, { dict: IData; count: number }>;
+  wrongItems: Record<string, { dict: IData; count: number }>;
+}) => {
   const navigate = useNavigate();
+  const [isRightOpen, setIsRightOpen] = React.useState(false);
+  const [isWrongOpen, setIsWrongOpen] = React.useState(false);
 
   return (
     <>
@@ -33,20 +48,28 @@ export const AfterPanel = ({ property, difficulty, count, rightItems, wrongItems
                 location.reload();
               }}
             >
+              <PlayImage src={refreshIcon} />{" "}
               다시 하기
             </PlayAfterButton>
-            <PlayAfterButton onClick={() => navigate("/")}>홈으로</PlayAfterButton>
+            <PlayAfterButton onClick={() => navigate("/")}><PlayImage src={homeIcon} />{" "}홈으로</PlayAfterButton>
           </PlayAfterButtonSet>
           <PlayAfterSubTitle>⏱️ 시간: {(count - 350) / 100}초</PlayAfterSubTitle>
-          <PlayAfterSubTitle>📊 통계</PlayAfterSubTitle>
+          <PlayAfterSubTitle>🎯 통계</PlayAfterSubTitle>
           <p>
-            <details>
-              <DictSummary>
-                <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
-                <DictSubTitle>
-                  틀린 한자 <span>({Object.values(wrongItems).length}개)</span>
-                </DictSubTitle>
-              </DictSummary>
+            <DictViewAccordion
+              contents={Object.values(wrongItems)}
+              open={isWrongOpen}
+              onClick={() => {
+                setIsWrongOpen((cur) => !cur);
+              }}
+              groupTitle={
+                <>
+                  <DictSubTitle>
+                    ❌ 틀린 한자 <span>({Object.values(wrongItems).length}개)</span>
+                  </DictSubTitle>
+                </>
+              }
+            >
               <div>
                 {Object.values(wrongItems).map((item) => {
                   return (
@@ -61,16 +84,30 @@ export const AfterPanel = ({ property, difficulty, count, rightItems, wrongItems
                   );
                 })}
               </div>
-            </details>
+            </DictViewAccordion>
           </p>
           <p>
-            <details>
+            {/* <details>
               <DictSummary>
                 <DictImage src={leftChevron} style={{ transform: "rotate(-90deg)" }} />
                 <DictSubTitle>
                   맞춘 한자 <span>({Object.values(rightItems).length}개)</span>
                 </DictSubTitle>
-              </DictSummary>
+              </DictSummary> */}
+            <DictViewAccordion
+              contents={Object.values(rightItems)}
+              open={isRightOpen}
+              onClick={() => {
+                setIsRightOpen((cur) => !cur);
+              }}
+              groupTitle={
+                <>
+                  <DictSubTitle>
+                  ⭕ 맞춘 한자 <span>({Object.values(rightItems).length}개)</span>
+                  </DictSubTitle>
+                </>
+              }
+            >
               <div>
                 {Object.values(rightItems).map((item) => {
                   return (
@@ -85,10 +122,10 @@ export const AfterPanel = ({ property, difficulty, count, rightItems, wrongItems
                   );
                 })}
               </div>
-            </details>
+            </DictViewAccordion>
           </p>
         </PlayAfterPanel>
       </AfterPanelBackground>
     </>
   );
-}
+};

@@ -65,6 +65,39 @@ export const PlayStatBlock = styled.div`
   left: -45rem;
 `
 
+export const PlayStatBlockSmallLeft = styled.div`
+  border-radius: 2rem;
+  padding: 2rem;
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  z-index: 1001;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: -10rem;
+  left: -20px;
+`
+
+export const PlayStatBlockSmall = styled.div`
+  background-color: #ffffff40;
+  border-radius: 2rem;
+  padding: 1rem;
+  position: absolute;
+  width: fit-content;
+  height: fit-content;
+  z-index: 1001;
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+  top: -10rem;
+  right: -20px;
+  align-items: center;
+  font-size: 5.5rem;
+  font-weight: 800;
+  vertical-align: middle;
+`
+
 export const PlayImage = styled(DictImage)`
   width: 5rem;
   transform: scaleX(-1);
