@@ -32,7 +32,7 @@ import {
   DictNewTitle,
 } from "../../../components/dict/new";
 import { useForm } from "react-hook-form";
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4, v4 } from "uuid";
 import { IndexContext } from "../..";
 
 const DictNewContext = React.createContext<{
@@ -56,12 +56,54 @@ const DictNewContext = React.createContext<{
 });
 
 export const DictConfigMetadataPage = () => {
-  const { setTab, setDict, dict } = React.useContext(DictNewContext);
+  const navigate = useNavigate();
+  const { setTab, setDict, dict, setDictForm, setDictFormPersist } = React.useContext(DictNewContext);
   const { unregister, register, setValue, getValues, handleSubmit, watch, formState, setError } = useForm<{
     name: string;
     description: string;
     edit: "disallow" | "allow";
   }>();
+  const { dictName } = useParams<{ dictName: string; }>();
+
+  React.useEffect(() => {
+    const dictIntegration: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-common") ?? "{}"), ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
+    if (dictName === undefined || dictIntegration[dictName] === undefined ) {
+      navigate("/dict", { replace: true });
+      return;
+    }
+
+    const dictOrigin = dictIntegration[dictName]
+    const dictMetadata = { ...dictOrigin, content: undefined };
+    setValue("name", dictMetadata.name);
+    setValue("description", dictMetadata.description ?? "");
+    setValue("edit", dictMetadata.edit ?? "disallow");
+    setDict(dictMetadata)
+    
+    let rebuildDictForm: Record<string, string[]> = {};
+    let rebuildDictFormPersist: Record<string, { data: Record<string, { define: string; form: string; sound: string }>; name: string }> = {};
+    for (const [groupName, data] of Object.entries(dictOrigin.content)) {
+      const datalinesKey = v4();
+      const tmpRebuildDictForm = [];
+      let tmpRebuildDictFormPersist = {};
+
+      for (let dataline of data) {
+        const datalineKey = v4();
+        let datalineComprehensive: { define: string; form: string; sound: string } = {
+          form: dataline.form.join(","),
+          sound: dataline.sound.join(","),
+          define: dataline.define ?? ""
+        };
+        tmpRebuildDictForm.push(datalineKey)
+        tmpRebuildDictFormPersist = {...tmpRebuildDictFormPersist, [datalineKey]: datalineComprehensive }
+      }
+
+      rebuildDictForm = { ...rebuildDictForm, [datalinesKey]: tmpRebuildDictForm }
+      rebuildDictFormPersist = {...rebuildDictFormPersist, [datalinesKey]: { data: tmpRebuildDictFormPersist, name: groupName } }
+    }
+
+    setDictForm(rebuildDictForm)
+    setDictFormPersist(rebuildDictFormPersist)
+  }, [])
 
   React.useEffect(() => {
     const name = dict?.name;
@@ -74,14 +116,14 @@ export const DictConfigMetadataPage = () => {
 
   return (
     <>
-      <PageTitle title={`사전 설정 | 한자 마당`} />
+      <PageTitle title={`사전 정보 수정 | 한자 마당`} />
       <DictMain>
         <DictNewTitle>
           <span>字</span>
-          <span>사전 설정</span>
+          <span>사전 정보 수정</span>
           <i>(1/3)</i>
         </DictNewTitle>
-        <DictDescription>사전 정보를 입력해주세요!</DictDescription>
+        <DictDescription>사전 정보를 수정해주세요!</DictDescription>
         <form
           onSubmit={handleSubmit((value) => {
             setDict((cur) => ({ ...cur, ...value }));
@@ -150,14 +192,14 @@ export const DictAddListPage = () => {
   console.log("error", formState.errors)
   return (
     <>
-      <PageTitle title={`사전 목록 추가 | 한자 마당`} />
+      <PageTitle title={`사전 목록 수정 | 한자 마당`} />
       <DictMain>
         <DictNewTitle>
           <span>字</span>
-          <span>사전 목록 추가</span>
+          <span>사전 목록 수정</span>
           <i>(2/3)</i>
         </DictNewTitle>
-        <DictDescription>나만의 사전을 만들어보세요!</DictDescription>
+        <DictDescription>목록에서 수정할 내용을 찾아 수정하세요!</DictDescription>
         <DictArticle>
           <form
             onSubmit={handleSubmit((value) => {
@@ -279,18 +321,8 @@ export const DictAddListPage = () => {
                                       //   }
                                       // },
                                       onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
-                                        setValue(
-                                          `${datalinesKey}.data.${datalineKey}.form`,
-                                          Array.from(
-                                            new Set(
-                                              event.currentTarget.value
-                                                .split(",")
-                                                .map((v) => v.trim())
-                                                .filter((v) => v !== "")
-                                            )
-                                          ).join(",")
-                                        );
-                                      },
+                                        setValue(`${datalinesKey}.data.${datalineKey}.form`, Array.from(new Set(event.currentTarget.value.split(",").map(v => v.trim()).filter(v => v !== ""))).join(","));
+                                      }
                                     })}
                                   />
                                 </DictNewSector>
@@ -313,7 +345,7 @@ export const DictAddListPage = () => {
                                             )
                                           ).join(",")
                                         );
-                                      },
+                                      }
                                     })}
                                   />
                                 </DictNewSector>
@@ -327,29 +359,22 @@ export const DictAddListPage = () => {
                               </DictNewSector>
                             </DictNewHanjaBoxMain>
                             <DictNewHanjaBoxSidebar>
-                              {datalines.length > 1 ? (
-                                <>
-                                  <DictButton
-                                    onClick={(e) => {
-                                      unregister(`${datalinesKey}.data.${datalineKey}`);
-                                      setDictForm((cur) => {
-                                        const replaced = { ...cur };
-                                        replaced[datalinesKey].splice(
-                                          replaced[datalinesKey].findIndex((v) => v === datalineKey),
-                                          1
-                                        );
-                                        return replaced;
-                                      });
-                                    }}
-                                    style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30", padding: ".5rem" }}
-                                    type="button"
-                                  >
-                                    <DictImage src={closeIcon} />
-                                  </DictButton>
-                                </>
-                              ) : (
-                                <></>
-                              )}
+                              <DictButton
+                                type="button"
+                                onClick={(e) => {
+                                  unregister(`${datalinesKey}.data.${datalineKey}`);
+                                  setDictForm((cur) => {
+                                    const replaced = { ...cur };
+                                    replaced[datalinesKey].splice(
+                                      replaced[datalinesKey].findIndex((v) => v === datalineKey),
+                                      1
+                                    );
+                                    return replaced;
+                                  });
+                                }}
+                              >
+                                <DictImage src={closeIcon} />
+                              </DictButton>
                             </DictNewHanjaBoxSidebar>
                           </DictNewHanjaBox>
                         );
@@ -396,6 +421,7 @@ export const DictAddListPage = () => {
 
 export const DictPreviewPage = () => {
   const navigate = useNavigate();
+  const { dictName } = useParams<{ dictName: string; }>();
   const { dict, setDict, dictFormPersist, setTab } = React.useContext(DictNewContext);
   const content: Record<string, IData[]> = {};
   for (const datalines of Object.values(dictFormPersist ?? {})) {
@@ -414,6 +440,11 @@ export const DictPreviewPage = () => {
   }
   const dictExplicit = { ...dict, content } as IDict;
   const [groupOpen, setGroupOpen] = React.useState<Record<string, boolean>>(Object.keys(dictExplicit).reduce((prev, cur) => ({ ...prev, [cur]: true }), {}))
+
+  if (dictName === undefined) {
+    navigate("/dict")
+    return <></>
+  }
 
   return (
     <>
@@ -440,7 +471,7 @@ export const DictPreviewPage = () => {
               onClick={() => {
                 localStorage.setItem(
                   "dict-custom",
-                  JSON.stringify({ ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}"), [`${uuidv4()}`]: dictExplicit })
+                  JSON.stringify({ ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}"), [dictName ?? v4()]: dictExplicit })
                 );
                 navigate("/dict");
               }}
@@ -498,7 +529,8 @@ export const DictPreviewPage = () => {
   );
 };
 
-export const DictNewPage = () => {
+export const DictModifyPage = () => {
+  const navigate = useNavigate();
   const [initPage, setInitPage] = React.useState<JSX.Element>(<></>);
   const [dict, setDict] = React.useState<Partial<IDict> | undefined>();
   const [dictForm, setDictForm] = React.useState<Record<string, string[]>>();
@@ -509,13 +541,14 @@ export const DictNewPage = () => {
 
   const { setColorPair } = React.useContext(IndexContext);
   React.useEffect(() => {
+    
     setColorPair(["#8eaaca", "#ffe7c4"]);
   }, []);
 
   React.useEffect(() => {
     setInitPage(
       <>
-        <PageTitle title="산성비 놀이 | 놀이 준비 | 한자 마당" />
+        <PageTitle title="사전 수정 | 한자 마당" />
         <DictNewContext.Provider value={{ dict, dictForm, dictFormPersist, setDict, setDictForm, setDictFormPersist, setTab }}>
           {tab === "configMetadata" ? (
             <DictConfigMetadataPage />

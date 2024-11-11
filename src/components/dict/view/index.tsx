@@ -1,6 +1,6 @@
 import React from "react";
 import { styled } from "styled-components";
-import { DictImage } from "..";
+import { DictButton, DictImage } from "..";
 import { leftChevron } from "../../../constant/IMAGE_PATH";
 import { IData } from "../../../database/busu";
 
@@ -141,3 +141,59 @@ export const DictViewAccordion = (props: { groupTitle: JSX.Element, contents: an
     </>
   );
 }
+
+export const DictPanelBackgroundBox = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1001;
+  backdrop-filter: blur(1px);
+  background-color: #00000010;
+`
+
+export const DictPanel = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  border: 3px solid rgba(255, 189, 66, 0.9);
+  background-color: rgba(255, 213, 124, 0.9);
+  border-radius: 2rem;
+  padding: 3rem;
+  width: 600px;
+
+  h2 {
+    font-size: 7rem;
+  }
+
+  div:nth-child(1) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  div:nth-child(2) {
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+    font-size: 4rem;
+  }
+`
+
+export const DictShareInput = styled.input`
+  all: unset;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.6);
+  width: 100%;
+  height: 5rem;
+  font-size: 3rem;
+  padding: .5rem;
+  border-radius: 1rem;
+`
+
+export const DictPanelButton = styled(DictButton)`
+  border-radius: 1rem;
+  font-size: 4rem;
+`

@@ -9,8 +9,7 @@ export interface IDict {
   name: string;
   description: string;
   content: Record<string, IData[]>;
-  edit: "disallow" | "password" | "allow";
-  password?: string;
+  edit: "disallow" | "allow";
 }
 
 

@@ -14,6 +14,7 @@ import { DictNewPage } from "./dict/new";
 import { v4 } from "uuid";
 import { PlayAcidrainPage } from "./play/acidrain";
 import WebFont from "webfontloader";
+import { DictModifyPage } from "./dict/modify";
 
 interface IAnimateBackground {
   $primary: string;
@@ -322,6 +323,9 @@ export default function App() {
                 <Route path=":dictName" element={<DictViewPage />} />
               </Route>
               <Route path="new" element={<DictNewPage />} />
+              <Route path="modify" element={<><Outlet/></>}>
+                <Route path=":dictName" element={<DictModifyPage />} />
+              </Route>
             </Route>
             <Route path="/info" element={<InfoPage />} />
             <Route path="/ready" element={<IndexReadyPage />}>
