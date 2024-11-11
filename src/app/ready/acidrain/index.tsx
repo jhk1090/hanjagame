@@ -134,11 +134,11 @@ const DictlineSelectionPage = () => {
           <form
             style={{ border: error ? "3px solid #ff4747" : "3px solid #00000070", borderRadius: "1rem", padding: "2rem" }}
             onSubmit={handleSubmit((data: TDictConfig) => {
-              const dictAcc: IData[] = [];
+              const dictFlatArray: IData[] = [];
               Object.keys(data).forEach((group) => {
                 data[group].dict.forEach((value, index) => {
                   if (value) {
-                    dictAcc.push(dict.content[group][index]);
+                    dictFlatArray.push(dict.content[group][index]);
                   }
                   // if (value) {
                   //   // 음만 차용
@@ -157,12 +157,27 @@ const DictlineSelectionPage = () => {
                 });
               });
 
-              if (dictAcc.length === 0) {
+              if (dictFlatArray.length === 0) {
                 setError(true);
                 return;
               }
 
-              setDictConfig(dictAcc);
+              const dictMap: Record<string, string[]> = {};
+              for (const dictFlatElem of dictFlatArray) {
+                for (const form of dictFlatElem.form) {
+                  if (!dictMap[form]) {
+                    dictMap[form] = [];
+                  }
+                  dictMap[form].push(...dictFlatElem.sound)
+                }
+              }
+
+              const dictMapFlatArray: IData[] = [];
+              for (const [form, sound] of Object.entries(dictMap)) {
+                dictMapFlatArray.push({ form: [form], sound: Array.from(new Set(sound)), key: form })
+              }
+
+              setDictConfig(dictMapFlatArray);
               setTab("gameConfig");
               setError(false);
             })}

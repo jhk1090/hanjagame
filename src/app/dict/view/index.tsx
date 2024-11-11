@@ -244,10 +244,10 @@ export const DictViewPage = () => {
             <div>
               아래 <b>링크를 복사</b>해서 공유하세요!
               <br />
-              <DictShareInput defaultValue={`localhost:3000/dict#${JSON.stringify(dict)}`} readOnly />
+              <DictShareInput defaultValue={`hanja-game.netlify.app/dict#${JSON.stringify(dict)}`} readOnly />
               <DictPanelButton
                 onClick={() => {
-                  navigator.clipboard.writeText(`localhost:3000/dict#${JSON.stringify(dict)}`);
+                  navigator.clipboard.writeText(`hanja-game.netlify.app/dict#${JSON.stringify(dict)}`);
                   setIsShareLinkCopied(true);
                 }}
                 style={{ backgroundColor: isShareLinkCopied ? "#3d942a90" : "#5cd83d90" }}
