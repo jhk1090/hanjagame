@@ -9,6 +9,7 @@ import { IndexContext } from "..";
 import { v4 } from "uuid";
 import { DictPanel, DictPanelBackgroundBox, DictPanelButton, DictShareInput } from "../../components/dict/view";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const DictPage = () => {
   const { setColorPair } = React.useContext(IndexContext);
@@ -20,6 +21,14 @@ export const DictPage = () => {
     const target = decodeURIComponent(hash).substring(1);
     try {
       let parsed = JSON.parse(target);
+      const validator = z.object({
+        name: z.string(),
+        description: z.string(),
+        content: z.record(z.string(), z.array(z.object({ key: z.string(), form: z.array(z.string()), sound: z.array(z.string()), define: z.string().optional() }))),
+        edit: z.enum(["disallow", "allow"])
+      })
+      validator.parse(parsed)
+      
       const dictCustom: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
       localStorage.setItem("dict-custom", JSON.stringify({ ...dictCustom, [v4()]: parsed }));
       navigate("#");
@@ -240,13 +249,23 @@ export const DictPage = () => {
                 const target = value.link.split("#").slice(1).join("#");
                 try {
                   let parsed = JSON.parse(target);
+                  const validator = z.object({
+                    name: z.string(),
+                    description: z.string(),
+                    content: z.record(z.string(), z.array(z.object({ key: z.string(), form: z.array(z.string()), sound: z.array(z.string()), define: z.string().optional() }))),
+                    edit: z.enum(["disallow", "allow"])
+                  })
+                  validator.parse(parsed)
+
                   const dictCustom: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
                   localStorage.setItem("dict-custom", JSON.stringify({ ...dictCustom, [v4()]: parsed }));
+
                   resetField("link");
                   clearErrors();
                   setIsSharePanelOpen(false);
                   setIsFileUploadFailed(false);
-                } catch {
+                } catch (error) {
+                  console.log(error)
                   setError("link", { type: "validate", message: "링크가 잘못되었습니다!" });
                 }
               })}
