@@ -14,7 +14,7 @@ export const Title = styled.h1`
 
 export const Main = styled.main`
   max-width: 768px;
-  max-height: 100lvh;
+  max-height: 100dvh;
   padding: 2rem;
   overflow-wrap: break-word;
   word-break: keep-all;

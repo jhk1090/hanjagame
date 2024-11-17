@@ -132,7 +132,7 @@ export const PlayAfterPanel = styled.div`
   transform: translate(50%, -50%);
   background-color: rgba(248, 185, 126, 0.9);
   border-radius: 2rem;
-  max-height: 100vh;
+  max-height: 100dvh;
   overflow: scroll;
   overflow-x: auto;
   overflow-y: auto;
