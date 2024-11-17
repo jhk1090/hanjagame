@@ -21,12 +21,14 @@ const AfterPanelBackground = styled.div`
 export const AfterPanel = ({
   property,
   difficulty,
+  limit,
   count,
   rightItems,
   wrongItems,
 }: {
   property: IData[];
   difficulty: number;
+  limit: number;
   count: number;
   rightItems: Record<string, { dict: IData; count: number }>;
   wrongItems: Record<string, { dict: IData; count: number }>;
@@ -43,7 +45,7 @@ export const AfterPanel = ({
           <PlayAfterButtonSet>
             <PlayAfterButton
               onClick={() => {
-                localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty }));
+                localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty, limit: limit }));
                 navigate(`/play/acidrain`);
                 location.reload();
               }}

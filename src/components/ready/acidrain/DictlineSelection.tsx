@@ -8,14 +8,6 @@ export const ReadyDictlineSelectionSubTitle = styled(ReadySubTitle)`
   align-items: center;
   max-width: 100%;
   flex-wrap: wrap;
-  span:nth-child(1) {
-    font-weight: 800;
-    font-size: 8rem;
-  }
-  span:nth-child(2) {
-    font-weight: 400;
-    font-size: 7rem;
-  }
 `
 
 export const ReadyDictlineSelectionButtonSet = styled.div`
@@ -29,7 +21,7 @@ export const ReadyDictlineSelectionButtonSet = styled.div`
 
 export const ReadyDictlineSelectionWarning = styled.span`
   display: block;
-  margin-top: 2.5rem;
+  margin-bottom: 2rem;
   font-size: 4.5rem;
   background-color: #d83d3d90;
   padding: 2rem;

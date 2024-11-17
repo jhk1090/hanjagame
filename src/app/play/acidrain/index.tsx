@@ -30,6 +30,7 @@ export const PlayAcidrainPage = () => {
 
   const [stageKey, setStageKey] = React.useState<IData[]>([]);
   const [stageDifficulty, setStageDifficulty] = React.useState<number>(0);
+  const [stageLimit, setStageLimit] = React.useState(5);
   const [isInit, setIsInit] = React.useState(false);
   const [isCountdownInit, setIsCountdownInit] = React.useState(false);
   const [isAfter, setIsAfter] = React.useState(false);
@@ -44,6 +45,20 @@ export const PlayAcidrainPage = () => {
   const [inputElement, setInputElement] = React.useState(<></>);
   const [timerElement, setTimerElement] = React.useState(<></>);
 
+  const [gameWidth, setGameWidth] = React.useState((window.innerWidth < 600 ? window.innerWidth - 50 : 600));
+  const [gameHeight, setGameHeight] = React.useState((window.innerHeight > 650 ? window.innerHeight - 50 : 600));
+
+  const updateDimension = () => {
+    setGameWidth((window.innerWidth < 600 ? window.innerWidth - 50 : 600))
+    setGameHeight((window.innerHeight > 650 ? window.innerHeight - 50 : 600))
+  }
+
+  React.useEffect(() => {
+    window.addEventListener("resize", updateDimension);
+
+    return () => window.removeEventListener("resize", updateDimension) 
+  }, [])
+
   const generateHanja = () => {
     const data = stageKey[getRandomInt(0, stageKey.length - 1)];
     const text = data.form[getRandomInt(0, data.form.length - 1)];
@@ -51,7 +66,7 @@ export const PlayAcidrainPage = () => {
       id: v4(),
       text,
       data,
-      x: getRandomArbitrary(0, 600 - text.length * 50),
+      x: getRandomArbitrary(0, gameWidth - text.length * 50),
       y: 0,
       speed: 0.25,
     };
@@ -69,7 +84,7 @@ export const PlayAcidrainPage = () => {
   const updateHanjas = () => {
     setHanjas((prev) => {
       const reflected = prev.map((hanja) => ({ ...hanja, y: hanja.y + hanja.speed }));
-      const filtered = reflected.filter((hanja) => hanja.y < 550);
+      const filtered = reflected.filter((hanja) => hanja.y < gameHeight - 50);
       setAfterStatWrong((prev) => [...prev, ...reflected.filter((v) => !filtered.map((v) => v.id).includes(v.id)).map((v) => v.data)]);
       return filtered;
     });
@@ -80,6 +95,7 @@ export const PlayAcidrainPage = () => {
     if (dictPlay !== null) {
       setStageKey(JSON.parse(dictPlay).key);
       setStageDifficulty(JSON.parse(dictPlay).difficulty);
+      setStageLimit(Number(JSON.parse(dictPlay).limit));
       setIsInit(true);
     }
   }, []);
@@ -104,22 +120,13 @@ export const PlayAcidrainPage = () => {
   }, [isInit, isAfter, isCountdownInit]);
 
   React.useEffect(() => {
-    setStageBackgroundAlpha(
-      afterStatWrong.length === 0
-        ? 0.3
-        : afterStatWrong.length === 1
-        ? 0.4
-        : afterStatWrong.length === 2
-        ? 0.5
-        : afterStatWrong.length === 3
-        ? 0.6
-        : afterStatWrong.length === 4
-        ? 0.7
-        : afterStatWrong.length === 5
-        ? 0.8
-        : 0.9
-    );
-  }, [afterStatWrong]);
+    if (afterStatWrong.length === 0) {
+      setStageBackgroundAlpha(0.3)
+    } else {
+      setStageBackgroundAlpha(0.7 * (afterStatWrong.length / stageLimit) + 0.3)
+      console.log(afterStatWrong.length, stageLimit, afterStatWrong.length / stageLimit)
+    }
+  }, [afterStatWrong, stageLimit]);
 
   React.useEffect(() => {
     //@ts-ignore
@@ -129,7 +136,7 @@ export const PlayAcidrainPage = () => {
   }, [stageBackgroundAlpha]);
 
   React.useEffect(() => {
-    if (afterStatWrong.length === 5) {
+    if (afterStatWrong.length === stageLimit) {
       const wrongItems: Record<string, { dict: IData; count: number }> = {};
       for (const item of afterStatWrong) {
         if (Object.keys(wrongItems).includes(item.key)) {
@@ -151,7 +158,7 @@ export const PlayAcidrainPage = () => {
       setIsAfter(true);
       setAfterPanel(
         <>
-          <AfterPanel property={stageKey} difficulty={stageDifficulty} count={count} wrongItems={wrongItems} rightItems={rightItems} />
+          <AfterPanel property={stageKey} difficulty={stageDifficulty} count={count} limit={stageLimit} wrongItems={wrongItems} rightItems={rightItems} />
         </>
       );
     }
@@ -185,7 +192,7 @@ export const PlayAcidrainPage = () => {
                     allowedAnswer.push(sound.split(" ").at(-1) as string);
                   }
                 });
-                if (hanja.y < 550 && allowedAnswer.includes(data.answer?.trim() ?? "")) {
+                if (hanja.y < gameHeight - 50 && allowedAnswer.includes(data.answer?.trim() ?? "")) {
                   result = hanja;
                 }
               }
@@ -196,12 +203,8 @@ export const PlayAcidrainPage = () => {
               resetField("answer");
             })}
           >
-            <Input type="text" autoComplete="off" {...register("answer")} />
-            <InputGuide>
-              <PlayImage src={enterIcon} />
-              <Label>입력</Label>
-            </InputGuide>
-            <Button type="submit" />
+            <Input type="text" autoComplete="off" {...register("answer")} placeholder={"뜻 입력"} />
+            <Button type="submit" style={{visibility: "hidden"}} />
           </form>
         </PlayInputFieldBlock>
       </>
@@ -226,8 +229,8 @@ export const PlayAcidrainPage = () => {
       setTimerElement(
         <Text
           text={"三"}
-          x={300}
-          y={300}
+          x={gameWidth / 2}
+          y={gameHeight / 2}
           anchor={0.5}
           style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
         />
@@ -236,8 +239,8 @@ export const PlayAcidrainPage = () => {
       setTimerElement(
         <Text
           text={"二"}
-          x={300}
-          y={300}
+          x={gameWidth / 2}
+          y={gameHeight / 2}
           anchor={0.5}
           style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
         />
@@ -246,8 +249,8 @@ export const PlayAcidrainPage = () => {
       setTimerElement(
         <Text
           text={"一"}
-          x={300}
-          y={300}
+          x={gameWidth / 2}
+          y={gameHeight / 2}
           anchor={0.5}
           style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
         />
@@ -264,8 +267,8 @@ export const PlayAcidrainPage = () => {
         <Stage
           ref={stageRef}
           style={{ zIndex: 1001, borderRadius: "2rem" }}
-          width={600}
-          height={600}
+          width={gameWidth}
+          height={gameHeight}
           options={{ backgroundColor: "#df5555", backgroundAlpha: stageBackgroundAlpha, antialias: true }}
         >
           {hanjas.map((hanja) => (
@@ -279,7 +282,7 @@ export const PlayAcidrainPage = () => {
           ))}
           {timerElement}
         </Stage>
-        <StatPanel count={count} afterStatWrong={afterStatWrong} stageDifficulty={stageDifficulty} />
+        <StatPanel count={count} afterStatWrong={afterStatWrong} stageLimit={stageLimit} stageDifficulty={stageDifficulty} />
         {afterPanel}
         {inputElement}
       </PlayMain>

@@ -24,6 +24,7 @@ export const Main = styled.main`
   overflow: scroll;
   overflow-x: auto;
   overflow-y: auto;
+  backdrop-filter: blur(2px);
 `;
 
 export const Article = styled.article`
@@ -45,7 +46,6 @@ export const Button = styled.button`
   flex-direction: row;
   padding: 1rem;
   gap: 1rem;
-  font-size: 3rem;
   align-items: center;
   border: 1px solid rgba(255, 255, 255, 0.2);
   background-color: rgba(255, 255, 255, 0.2);

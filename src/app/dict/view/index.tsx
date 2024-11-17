@@ -45,9 +45,9 @@ export const DictViewPage = () => {
           <DictDescription>{dict.description}</DictDescription>
           <div style={{ display: "flex", flexDirection: "row", gap: "1rem", flexWrap: "wrap" }}>
             <DictLink to={"/dict"}>
-              <DictButton>
+              <DictButton style={{ width: "max-content", backgroundColor: "#ffffff70" }}>
                 <DictImage src={leftChevron} />
-                이전으로
+                이전으로 (사전)
               </DictButton>
             </DictLink>
             <DictButton

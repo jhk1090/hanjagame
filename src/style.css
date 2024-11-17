@@ -16,14 +16,11 @@
 
 #root {
   width: 100vw;
-  height: 100vh;
+  height: 100lvh;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-html {
-  font-size: 7px;
+  overflow: hidden;
 }
 
 body {
@@ -32,25 +29,25 @@ body {
 
 * {
   font-family: jamsil, 'hanyang', sans-serif;
-  box-sizing: border-box;
+  box-sizing: border-box !important;
   user-select: none;
   -webkit-user-drag: none;
 }
 
-/* @media only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
   html {
-      font-size: 7px;
+      font-size: 5px;
   }
 }
 
 @media only screen and (min-width: 769px) and (max-width: 992px) {
   html {
-      font-size: 9px;
+      font-size: 6px;
   }
 }
 
 @media only screen and (min-width : 993px) {
   html {
-      font-size: 11px;
+      font-size: 7px;
   }
-} */
+}

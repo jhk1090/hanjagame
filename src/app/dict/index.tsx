@@ -57,9 +57,9 @@ export const DictPage = () => {
           <span>사전</span>
         </DictTitle>
         <DictLink to={".."}>
-          <DictButton>
+          <DictButton style={{ width: "max-content", backgroundColor: "#ffffff70" }}>
             <DictImage src={leftChevron} />
-            이전으로
+            이전으로 (홈)
           </DictButton>
         </DictLink>
         <DictArticle>
@@ -76,7 +76,7 @@ export const DictPage = () => {
           <DictSubTitle>
             사용자 추가 사전 <span>({Object.keys(dictCustom).length})</span>
           </DictSubTitle>
-          <div style={{ display: "flex", flexDirection: "row", gap: "1rem" }}>
+          <div style={{ display: "flex", flexDirection: "row", gap: "1rem", flexWrap: "wrap" }}>
             {!isDeleteMode ? (
               <>
                 {Object.keys(dictCustom).length !== 0 ? (

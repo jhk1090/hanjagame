@@ -156,6 +156,25 @@ export const DictALImage = styled(DictImage)`
   width: 5rem;
 `
 
+export const DictBottomBox = styled.div`
+  position: fixed;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+  bottom: 0;
+  max-width: 700px;
+  margin-left: 2rem;
+  margin-right: 2rem;
+  padding: 2rem;
+  border-top-left-radius: 2rem;
+  border-top-right-radius: 2rem;
+  background-color: #ffffff90;
+  border: 1px solid #ffffff70;
+  backdrop-filter: blur(2px);
+  z-index: 2000;
+`
+
 const StyledAccordion = styled.div<{ $length: number; }>`
   all: unset;
   border: 3px solid #00000070;
@@ -196,20 +215,18 @@ const StyledAccordion = styled.div<{ $length: number; }>`
   }
 `;
 
-export const Accordion = (props: { top: JSX.Element, datalines: string[]; open: boolean; onClick: () => void, children: JSX.Element }) => {
+export const Accordion = (props: { top: JSX.Element; title?: string; datalines: string[]; open: boolean; onClick: () => void, children: JSX.Element }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
       <StyledAccordion $length={props.datalines.length}>
         <DictNewGroupBox onClick={props.onClick} className={props.open ? "open" : ""}>
           <DictNewGroupBoxTop>
-            <div style={{display: "flex", flexDirection: "row", gap: "4rem"}}>
+            <div style={{ display: "flex", flexDirection: "row", gap: "4rem" }}>
               <DictImage className="arrow" src={leftChevron} />
-              <DictNewGroupBoxTitle>그룹</DictNewGroupBoxTitle>
+              <DictNewGroupBoxTitle>{props.title ? (props.title.length === 0 ? "그룹" : props.title) : "그룹"}</DictNewGroupBoxTitle>
             </div>
-            <div className="summary">
-              {props.top}
-            </div>
+            <div className="summary">{props.top}</div>
           </DictNewGroupBoxTop>
         </DictNewGroupBox>
         <div className={"content-wrapper"}>

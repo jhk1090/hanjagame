@@ -6,7 +6,8 @@ import { ReadyButton } from "../ready";
 
 export const Input = styled.input`
   all: unset;
-  background-color: #ffffff95;
+  background-color: #ffffff99;
+  backdrop-filter: blur(2px);
   border: 1px solid #00000030;
   height: 8rem;
   width: 60rem;
@@ -36,19 +37,34 @@ export const Label = styled.span`
 
 export const PlayMain = styled(Main)`
   position: relative;
-  min-width: 600px;
-  min-height: 700px;
   overflow: visible;
+  height: 100%;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+    align-items: center;
+  }
+
+  @media only screen and (min-width: 769px) {
+    width: 600px;
+  }
 `
 
 export const PlayInputFieldBlock = styled.div`
   position: absolute;
   bottom: 0;
-  width: 600px;
   height: fit-content;
   z-index: 1001;
   display: flex;
   justify-content: center;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 769px) {
+    width: 600px;
+  }
 `
 
 export const PlayStatBlock = styled.div`
@@ -75,7 +91,7 @@ export const PlayStatBlockSmallLeft = styled.div`
   display: flex;
   flex-direction: row;
   position: absolute;
-  top: -10rem;
+  top: 0;
   left: -20px;
 `
 
@@ -90,12 +106,18 @@ export const PlayStatBlockSmall = styled.div`
   display: flex;
   flex-direction: row;
   position: absolute;
-  top: -10rem;
+  top: 0;
   right: -20px;
   align-items: center;
   font-size: 5.5rem;
   font-weight: 800;
   vertical-align: middle;
+`
+
+export const PlayStatBlockCenter = styled(PlayStatBlockSmall)`
+  width: max-content;
+  right: 50%;
+  transform: translateX(50%);
 `
 
 export const PlayImage = styled(DictImage)`
@@ -110,14 +132,21 @@ export const PlayAfterPanel = styled.div`
   transform: translate(50%, -50%);
   background-color: rgba(248, 185, 126, 0.9);
   border-radius: 2rem;
-  width: 600px;
-  max-height: 100lvh;
+  max-height: 100vh;
   overflow: scroll;
   overflow-x: auto;
   overflow-y: auto;
   padding: 2rem;
   z-index: 1003;
-`
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 769px) {
+    width: 600px;
+  }
+`;
 
 export const PlayAfterTitle = styled(Title)`
   font-size: 12rem;

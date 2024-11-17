@@ -11,10 +11,10 @@ export const ReadyPage = () => {
   // React.useEffect(() => {
   //   setInitPage(
   //     <>
-  //       <PageTitle title="놀이 준비 | 한자 마당" />
+  //       <PageTitle title="게임 준비 | 한자 마당" />
   //       <ReadyMain>
-  //         <ReadyTitle><span>樂</span>놀이 준비</ReadyTitle>
-  //         <ReadyDescription>어떤 놀이를 즐길까요?</ReadyDescription>
+  //         <ReadyTitle><span>樂</span>게임 준비</ReadyTitle>
+  //         <ReadyDescription>어떤 게임를 즐길까요?</ReadyDescription>
   //         <ReadyLink to={".."}>
   //           <ReadyButton>
   //             <ReadyImage src={leftChevron} />
@@ -22,8 +22,8 @@ export const ReadyPage = () => {
   //           </ReadyButton>
   //         </ReadyLink>
   //         <ReadyArticle>
-  //           <Button>오지선다 놀이</Button>
-  //           <Link to="acidrain"><Button>산성비 놀이</Button></Link>
+  //           <Button>오지선다 게임</Button>
+  //           <Link to="acidrain"><Button>산성비 게임</Button></Link>
   //         </ReadyArticle>
   //       </ReadyMain>
   //     </>

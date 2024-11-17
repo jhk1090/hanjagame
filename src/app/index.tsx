@@ -8,7 +8,6 @@ import { busu } from "../database/busu";
 import { DictViewPage } from "./dict/view";
 import { ReadyPage } from "./ready";
 import { ReadyAcidrainPage } from "./ready/acidrain";
-import { PlayPage } from "./play";
 import styled, { createGlobalStyle } from "styled-components";
 import { DictNewPage } from "./dict/new";
 import { v4 } from "uuid";
@@ -217,7 +216,7 @@ const HeadStyle = createGlobalStyle`
   border-radius: 8px;
   border: 3px solid transparent;
   background-clip: content-box;
-  background-color: #d5a359;
+  background-color: #33333390;
 }
 `;
 
@@ -242,18 +241,17 @@ const IndexPage = () => {
           </Logo>
           <Article>
             <TitleLink to="/ready/acidrain">
-              <TitleButton style={{fontSize: "7rem", gap: "2rem"}}>
-                <TitleButtonLabel>樂</TitleButtonLabel>놀이 시작
+              <TitleButton style={{ fontSize: "7rem", gap: "2rem" }}>
+                <TitleButtonLabel>樂</TitleButtonLabel>게임 시작
               </TitleButton>
             </TitleLink>
             <TitleLink to="/dict">
-              <TitleButton style={{fontSize: "7rem", gap: "2rem"}}>
+              <TitleButton style={{ fontSize: "7rem", gap: "2rem" }}>
                 <TitleButtonLabel>字</TitleButtonLabel>사전
               </TitleButton>
             </TitleLink>
-            <TitleButton style={{fontSize: "7rem", gap: "2rem"}}>설정</TitleButton>
             <TitleLink to="/info">
-              <TitleButton style={{fontSize: "7rem", gap: "2rem"}}>
+              <TitleButton style={{ fontSize: "7rem", gap: "2rem" }}>
                 <TitleButtonLabel>知</TitleButtonLabel>정보
               </TitleButton>
             </TitleLink>
@@ -333,7 +331,7 @@ export default function App() {
               <Route path="acidrain" element={<ReadyAcidrainPage />} />
             </Route>
             <Route path="/play" element={<><Outlet /></>}>
-              <Route index element={<PlayPage />} />
+              <Route index element={<></>} />
               <Route path="acidrain" element={<PlayAcidrainPage />} />
             </Route>
           </Routes>
