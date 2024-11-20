@@ -115,7 +115,9 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
             <DictNewSector>
               <DictNewCMLabel htmlFor="name">이름</DictNewCMLabel>
               <DictNewCMInput
-                {...register("name", { required: { value: true, message: "값을 입력하세요!" }, maxLength: { value: 50, message: "최대 50자입니다." } })}
+                {...register("name", { required: { value: true, message: "값을 입력하세요!" }, maxLength: { value: 50, message: "최대 50자입니다." }, onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                  setValue(`name`, event.currentTarget.value.trim());
+                } })}
                 style={{ border: formState?.errors?.name?.message ? "2px solid red" : "" }}
                 autoComplete="off"
                 placeholder="사전의 이름"
@@ -125,7 +127,9 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
             </DictNewSector>
             <DictNewSector>
               <DictNewCMLabel htmlFor="description">설명</DictNewCMLabel>
-              <DictNewCMInput {...register("description")} autoComplete="off" placeholder="사전의 설명" id="description" type="text" />
+              <DictNewCMInput {...register("description", { onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                  setValue(`description`, event.currentTarget.value.trim());
+                }})} autoComplete="off" placeholder="사전의 설명" id="description" type="text" />
             </DictNewSector>
             <DictNewSector>
               <DictNewCMLabel htmlFor="edit">수정 설정</DictNewCMLabel>
