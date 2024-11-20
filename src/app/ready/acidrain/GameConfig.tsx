@@ -56,7 +56,8 @@ export const GameConfigPage = () => {
         <ReadyArticle>
           <form
             onSubmit={handleSubmit((data) => {
-              localStorage.setItem("dict-play", JSON.stringify({ key: dictConfig, difficulty: data.difficulty, limit: data.limit, isSound: data.isSound === 1 }));
+              console.log(data.isSound)
+              localStorage.setItem("dict-play", JSON.stringify({ key: dictConfig, difficulty: data.difficulty, limit: data.limit, isSound: Number(data.isSound) === 1 }));
               navigate(`/play/acidrain`);
             })}
             ref={submitRef}

@@ -161,7 +161,7 @@ export const PlayAcidrainPage = () => {
       setIsAfter(true);
       setAfterPanel(
         <>
-          <AfterPanel property={stageKey} difficulty={stageDifficulty} count={count} limit={stageLimit} wrongItems={wrongItems} rightItems={rightItems} />
+          <AfterPanel property={stageKey} difficulty={stageDifficulty} count={count} limit={stageLimit} wrongItems={wrongItems} isSound={stageIsSound} rightItems={rightItems} />
         </>
       );
     }

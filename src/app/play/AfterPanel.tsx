@@ -24,12 +24,14 @@ export const AfterPanel = ({
   limit,
   count,
   rightItems,
+  isSound,
   wrongItems,
 }: {
   property: IData[];
   difficulty: number;
   limit: number;
   count: number;
+  isSound: boolean;
   rightItems: Record<string, { dict: IData; count: number }>;
   wrongItems: Record<string, { dict: IData; count: number }>;
 }) => {
@@ -45,7 +47,7 @@ export const AfterPanel = ({
           <PlayAfterButtonSet>
             <PlayAfterButton
               onClick={() => {
-                localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty, limit: limit }));
+                localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty, limit: limit, isSound }));
                 navigate(`/play/acidrain`);
                 location.reload();
               }}
