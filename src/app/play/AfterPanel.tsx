@@ -41,7 +41,7 @@ export const AfterPanel = ({
     <>
       <AfterPanelBackground>
         <PlayAfterPanel>
-          <PlayAfterTitle>놀이 끝!</PlayAfterTitle>
+          <PlayAfterTitle>게임 오버!</PlayAfterTitle>
           <PlayAfterButtonSet>
             <PlayAfterButton
               onClick={() => {
