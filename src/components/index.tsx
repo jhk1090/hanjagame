@@ -84,3 +84,43 @@ export const SubTitle = styled.h2`
 export const Paragraph = styled.p`
   font-size: 3rem;
 `;
+
+export const ToastMessageBox = styled.div`
+  position: fixed;
+  bottom: 2rem;
+  right: 50%;
+  transform: translateX(50%);
+  font-size: 4.5rem;
+  background-color: #00000090;
+  border-radius: 1rem;
+  padding: 1.5rem 3rem 1.5rem 3rem;
+  color: #fff;
+  word-break: keep-all;
+  backdrop-filter: blur(2px);
+  text-align: center;
+  z-index: 4000;
+  animation: 4s slideDown cubic-bezier(0.42, 0, 0.58, 1) forwards;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 769px) {
+    width: 600px;
+  }
+
+  @keyframes slideDown {
+    0% {
+      bottom: 2rem;
+      opacity: 1;
+    }
+    50% {
+      bottom: 2rem;
+      opacity: 1;
+    }
+    100% {
+      bottom: -50vh;
+      opacity: 0;
+    }
+  }
+`;

@@ -31,6 +31,7 @@ export const PlayAcidrainPage = () => {
   const [stageKey, setStageKey] = React.useState<IData[]>([]);
   const [stageDifficulty, setStageDifficulty] = React.useState<number>(0);
   const [stageLimit, setStageLimit] = React.useState(5);
+  const [stageIsSound, setStageIsSound] = React.useState(true);
   const [isInit, setIsInit] = React.useState(false);
   const [isCountdownInit, setIsCountdownInit] = React.useState(false);
   const [isAfter, setIsAfter] = React.useState(false);
@@ -92,10 +93,12 @@ export const PlayAcidrainPage = () => {
 
   React.useEffect(() => {
     const dictPlay = localStorage.getItem("dict-play");
+    localStorage.setItem("dict-play-archive", dictPlay ?? "");
     if (dictPlay !== null) {
       setStageKey(JSON.parse(dictPlay).key);
       setStageDifficulty(JSON.parse(dictPlay).difficulty);
       setStageLimit(Number(JSON.parse(dictPlay).limit));
+      setStageIsSound(JSON.parse(dictPlay).isSound);
       setIsInit(true);
     }
   }, []);
@@ -188,7 +191,7 @@ export const PlayAcidrainPage = () => {
                 const allowedAnswer: string[] = [];
                 hanja.data.sound.forEach((sound) => {
                   allowedAnswer.push(sound);
-                  if (sound.split(" ").length > 1) {
+                  if (stageIsSound && sound.split(" ").length > 1) {
                     allowedAnswer.push(sound.split(" ").at(-1) as string);
                   }
                 });

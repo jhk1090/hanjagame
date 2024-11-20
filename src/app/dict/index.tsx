@@ -12,7 +12,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 
 export const DictPage = () => {
-  const { setColorPair } = React.useContext(IndexContext);
+  const { setColorPair, setToastMessage } = React.useContext(IndexContext);
   const { hash } = useLocation();
   const navigate = useNavigate();
 
@@ -68,9 +68,7 @@ export const DictPage = () => {
           </DictSubTitle>
           <DictToViewBox>
             {Object.entries(dictCommon).map(([key, value]) => (
-              <DictLink to={`view/${key}`}>
-                <DictToView>字 {value.name}</DictToView>
-              </DictLink>
+              <DictToView key={key} onClick={() => navigate(`view/${key}`)}>字 {value.name}</DictToView>
             ))}
           </DictToViewBox>
           <DictSubTitle>
@@ -175,9 +173,9 @@ export const DictPage = () => {
                 <>
                   <DictToViewBox>
                     {Object.entries(dictCustom).map(([key, value]) => (
-                      <DictLink to={`view/${key}`}>
-                        <DictToView key={key}>字 {value.name}</DictToView>
-                      </DictLink>
+                      <DictToView onClick={() => navigate(`view/${key}`)} key={key}>
+                        字 {value.name}
+                      </DictToView>
                     ))}
                   </DictToViewBox>
                 </>
@@ -240,59 +238,29 @@ export const DictPage = () => {
               닫기
             </DictButton>
           </div>
-          <div>
-            <b>공유된 링크</b>를 여기에 <b>입력</b>해주세요!
-            <br />
-            <span style={{ color: "#00000090", fontStyle: "italic", fontSize: "3.5rem" }}>팁: 주소창에 직접 입력해 불러올 수 있습니다</span>
-            <form
-              onSubmit={handleSubmit((value) => {
-                const target = value.link.split("#").slice(1).join("#");
-                try {
-                  let parsed = JSON.parse(target);
-                  const validator = z.object({
-                    name: z.string(),
-                    description: z.string(),
-                    content: z.record(z.string(), z.array(z.object({ key: z.string(), form: z.array(z.string()), sound: z.array(z.string()), define: z.string().optional() }))),
-                    edit: z.enum(["disallow", "allow"])
-                  })
-                  validator.parse(parsed)
-
-                  const dictCustom: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
-                  localStorage.setItem("dict-custom", JSON.stringify({ ...dictCustom, [v4()]: parsed }));
-
-                  resetField("link");
-                  clearErrors();
-                  setIsSharePanelOpen(false);
-                  setIsFileUploadFailed(false);
-                } catch (error) {
-                  console.log(error)
-                  setError("link", { type: "validate", message: "링크가 잘못되었습니다!" });
-                }
-              })}
-            >
-              <DictShareInput
-                autoComplete="off"
-                style={{ border: formState.errors.link?.message ? "2px solid #ff4747" : "1px solid rgba(255, 255, 255, 0.6)" }}
-                {...register("link", { required: { message: "링크를 입력해주세요!", value: true } })}
-                placeholder="여기에 링크를 입력하세요"
-              />
-              <span style={{ color: "#ff4747", fontSize: "3.5rem" }}>{formState.errors.link?.message || ""}</span>
-              <DictPanelButton style={{ backgroundColor: "#5cd83d90" }}>
-                <DictImage style={{ width: "4rem" }} src={shareIcon} />
-                링크 불러오기
+          <div style={{ wordBreak: "keep-all" }}>
+            <b>다운로드한 사전</b>을 <b>업로드</b>하세요!
+            <br></br>
+            사전 공유는 <b>각 사전 조회 페이지</b>에서 <b>공유하기</b> 버튼을 눌러 사전을 다운받을 수 있습니다.
+            <br></br>
+            <span style={{ color: "#00000090", fontStyle: "italic", fontSize: "3.5rem" }}>부수.dict 형식의 사전을 업로드하세요!</span>
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+              <DictPanelButton
+                onClick={() => {
+                  uploadRef.current?.click();
+                }}
+                style={{
+                  border: isFileUploadFailed ? "2px solid #ff4747" : "",
+                  backgroundColor: "#3dd8a990",
+                  alignItems: "center",
+                  margin: "2rem",
+                  fontSize: "5rem",
+                }}
+              >
+                <DictImage style={{ width: "5rem" }} src={shareIcon} />
+                파일 불러오기
               </DictPanelButton>
-            </form>
-            <br />
-            또는, <b>다운로드한 파일</b>을 <b>업로드</b>하세요!
-            <DictPanelButton
-              onClick={() => {
-                uploadRef.current?.click();
-              }}
-              style={{ border: isFileUploadFailed ? "2px solid #ff4747" : "", backgroundColor: "#3dd8a990" }}
-            >
-              <DictImage style={{ width: "4rem" }} src={shareIcon} />
-              파일 불러오기
-            </DictPanelButton>
+            </div>
             <input
               type="file"
               accept=".dict"
@@ -309,6 +277,7 @@ export const DictPage = () => {
                       clearErrors();
                       setIsSharePanelOpen(false);
                       setIsFileUploadFailed(false);
+                      setToastMessage([`"${parsed.name}" 사전을 불러왔습니다!`]);
                     } catch {
                       setIsFileUploadFailed(true);
                     }

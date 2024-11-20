@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { PageTitle } from "../../../components";
 import { DictDescription } from "../../../components/dict/view";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain } from "../../../components/dict";
@@ -15,9 +15,11 @@ import { DictNewContext, IDictNewContext } from ".";
 import { IDict } from "../../../database/busu";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 } from "uuid";
+import { IndexContext } from "../..";
 
 
 export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewContext>, isModifying?: boolean; }) => {
+  const { setToastMessage } = useContext(IndexContext);
   const { setTab, setDict, dict, setDictForm, setDictFormPersist } = React.useContext(props.context);
   const { unregister, register, setValue, getValues, handleSubmit, watch, formState, setError } = useForm<{
     name: string;
@@ -37,6 +39,7 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
     const dictIntegration: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-common") ?? "{}"), ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
     if (dictName === undefined || dictIntegration[dictName] === undefined ) {
       navigate("/dict", { replace: true });
+      setToastMessage(["경로에 해당하는 사전을 찾을 수 없습니다!"])
       return;
     }
 
@@ -87,7 +90,7 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
 
   return (
     <>
-      <PageTitle title={`사전 정보 | 한자 마당`} />
+      <PageTitle title={`사전 정보 | ${props.isModifying ? "사전 수정" : "사전 추가"} | 한자 마당`} />
       <DictMain>
         <DictNewTitle>
           <span>字</span>
@@ -112,7 +115,7 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
             <DictNewSector>
               <DictNewCMLabel htmlFor="name">이름</DictNewCMLabel>
               <DictNewCMInput
-                {...register("name", { required: { value: true, message: "값을 입력하세요!" } })}
+                {...register("name", { required: { value: true, message: "값을 입력하세요!" }, maxLength: { value: 50, message: "최대 50자입니다." } })}
                 style={{ border: formState?.errors?.name?.message ? "2px solid red" : "" }}
                 autoComplete="off"
                 placeholder="사전의 이름"

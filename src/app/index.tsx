@@ -1,12 +1,11 @@
 import React, { JSX } from "react";
-import { BrowserRouter, Link, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import "../style.css";
-import { Article, Button, ButtonLabel, Main, Title, PageTitle } from "../components";
+import { Article, Button, ButtonLabel, Main, Title, PageTitle, ToastMessageBox } from "../components";
 import { DictPage } from "./dict";
 import { InfoPage } from "./info";
 import { busu } from "../database/busu";
 import { DictViewPage } from "./dict/view";
-import { ReadyPage } from "./ready";
 import { ReadyAcidrainPage } from "./ready/acidrain";
 import styled, { createGlobalStyle } from "styled-components";
 import { DictNewPage } from "./dict/new";
@@ -218,6 +217,10 @@ const HeadStyle = createGlobalStyle`
   background-clip: content-box;
   background-color: #33333390;
 }
+
+*::-webkit-scrollbar-corner {
+    background-color: #e7e7e740; 
+}
 `;
 
 const IndexPage = () => {
@@ -264,10 +267,12 @@ const IndexPage = () => {
   return <>{initPage}</>;
 };
 
-export const IndexContext = React.createContext<{ setColorPair: React.Dispatch<React.SetStateAction<string[]>> }>({ setColorPair: () => {} });
+export const IndexContext = React.createContext<{ setColorPair: React.Dispatch<React.SetStateAction<string[]>>; setToastMessage: React.Dispatch<React.SetStateAction<string[]>>; }>({ setColorPair: () => {}, setToastMessage: () => {} });
 
 export default function App() {
   const [colorPair, setColorPair] = React.useState(["#d6b547", "#ffeac4"]);
+  const [toastMessage, setToastMessage] = React.useState<string[]>([]);
+  const [toastLayout, setToastLayout] = React.useState(<></>);
 
   React.useEffect(() => {
     const common = localStorage.getItem("dict-common");
@@ -279,6 +284,13 @@ export default function App() {
       localStorage.setItem("dict-custom", JSON.stringify({}));
     }
   }, []);
+
+  React.useEffect(() => {
+    if (toastMessage.toReversed()[0] && toastMessage.toReversed()[0].length !== 0) {
+      setToastLayout(<ToastMessageBox onClick={()=>{setToastLayout(<></>)}} key={v4()}>{toastMessage.toReversed()[0]}</ToastMessageBox>)
+      setToastMessage([]);
+    }
+  }, [toastMessage.at(-1)])
 
   return (
     <>
@@ -297,7 +309,8 @@ export default function App() {
           <li>⾣</li>
         </ul>
       </AnimateBackground>
-      <IndexContext.Provider value={{ setColorPair }}>
+      {toastLayout}
+      <IndexContext.Provider value={{ setColorPair, setToastMessage }}>
         <BrowserRouter>
           <Routes>
             <Route index path="/" element={<IndexPage />} />
@@ -327,13 +340,14 @@ export default function App() {
             </Route>
             <Route path="/info" element={<InfoPage />} />
             <Route path="/ready" element={<IndexReadyPage />}>
-              <Route index element={<ReadyPage />} />
+              <Route index element={<Navigate to="/" replace />} />
               <Route path="acidrain" element={<ReadyAcidrainPage />} />
             </Route>
-            <Route path="/play" element={<><Outlet /></>}>
-              <Route index element={<></>} />
+            <Route path="/play" element={<><IndexReadyPage /></>}>
+              <Route index element={<Navigate to="/" replace />} />
               <Route path="acidrain" element={<PlayAcidrainPage />} />
             </Route>
+            <Route path="*" element={ <Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </IndexContext.Provider>

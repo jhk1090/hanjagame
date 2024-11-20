@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Article, Button, Main, PageTitle, SubTitle, Title } from "../../../components";
 import { DictViewAccordion, Dict, DictDefine, DictDescription, DictForm, DictHorizontal, DictSound, DictSummary, DictPanelBackgroundBox, DictPanel, DictShareInput, DictPanelButton } from "../../../components/dict/view";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
@@ -6,6 +6,7 @@ import { IDict } from "../../../database/busu";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain, DictSubTitle, DictTitle } from "../../../components/dict";
 import { checkIcon, closeIcon, copyIcon, downloadIcon, leftChevron, pencilIcon, shareIcon } from "../../../constant/IMAGE_PATH";
 import { v4 } from "uuid";
+import { IndexContext } from "../..";
 
 export const DictViewPage = () => {
   const navigate = useNavigate();
@@ -18,11 +19,13 @@ export const DictViewPage = () => {
   const [isSharePanelOpen, setIsSharePanelOpen] = React.useState(false);
   const [isShareLinkCopied, setIsShareLinkCopied] = React.useState(false);
   const [isDownloadCompleted, setIsDownloadCompleted] = React.useState(false);
+  const { setToastMessage } = useContext(IndexContext);
 
   React.useEffect(() => {
     const dictIntegration: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-common") ?? "{}"), ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
     if (dictName === undefined || dictIntegration[dictName] === undefined ) {
       navigate("/dict", { replace: true });
+      setToastMessage(["경로에 해당하는 사전을 찾을 수 없습니다!"])
       return;
     }
     setDict(dictIntegration[dictName])
@@ -65,6 +68,7 @@ export const DictViewPage = () => {
                 delete dictCustom[dictName];
                 localStorage.setItem("dict-custom", JSON.stringify(dictCustom));
                 navigate("/dict");
+                setToastMessage(["성공적으로 삭제되었습니다!"])
               }}
               style={{ backgroundColor: "#d83d3d90" }}
             >
@@ -91,6 +95,7 @@ export const DictViewPage = () => {
                 dict.edit = "allow";
                 localStorage.setItem("dict-custom", JSON.stringify({ ...dictCustom, [v4()]: dict }));
                 navigate("/dict");
+                setToastMessage([`"${dict.name}" 사전이 성공적으로 복사되었습니다!`])
               }}
               style={{ backgroundColor: "#5cd83d90" }}
             >
@@ -207,6 +212,7 @@ export const DictViewPage = () => {
                 localStorage.setItem("dict-custom", JSON.stringify({ ...dictCustom, [key]: dict }));
                 setIsModifyPanelOpen(false);
                 navigate(`/dict/view/${key}`);
+                setToastMessage([`"${dict.name}" 사전이 성공적으로 복사되었습니다!`])
               }}
               style={{ backgroundColor: "#5cd83d90" }}
             >
@@ -241,43 +247,33 @@ export const DictViewPage = () => {
                 닫기
               </DictButton>
             </div>
-            <div>
-              아래 <b>링크를 복사</b>해서 공유하세요!
+            <div style={{wordBreak:"keep-all"}}>
+              아래 <b>사전 다운로드</b> 버튼을 눌러 공유하세요!
               <br />
-              <DictShareInput defaultValue={`hanja-game.netlify.app/dict#${JSON.stringify(dict)}`} readOnly />
-              <DictPanelButton
-                onClick={() => {
-                  navigator.clipboard.writeText(`hanja-game.netlify.app/dict#${JSON.stringify(dict)}`);
-                  setIsShareLinkCopied(true);
-                }}
-                style={{ backgroundColor: isShareLinkCopied ? "#3d942a90" : "#5cd83d90" }}
-              >
-                <DictImage style={{ width: "4rem" }} src={isShareLinkCopied ? checkIcon : copyIcon} />
-                {isShareLinkCopied ? "복사 성공!" : "복사하기"}
-              </DictPanelButton>
-              <br />
-              또는, 아래 <b>파일을 다운로드</b>해서 공유하세요!
-              <DictPanelButton
-                onClick={() => {
-                  const content = JSON.stringify(dict);
-                  const blob = new Blob([content], { type: "text/plain" });
-                  const url = URL.createObjectURL(blob);
+              공유하는 방법은 <b>사전 페이지</b>에서 <b>사전 공유하기</b> 버튼을 눌러 다시 불러올 수 있습니다.
+              <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                <DictPanelButton
+                  onClick={() => {
+                    const content = JSON.stringify(dict);
+                    const blob = new Blob([content], { type: "text/plain" });
+                    const url = URL.createObjectURL(blob);
 
-                  const link = document.createElement("a");
-                  link.href = url;
-                  link.download = `${dict.name}.dict`;
-                  document.body.appendChild(link);
-                  link.click();
+                    const link = document.createElement("a");
+                    link.href = url;
+                    link.download = `${dict.name}.dict`;
+                    document.body.appendChild(link);
+                    link.click();
 
-                  document.body.removeChild(link);
-                  URL.revokeObjectURL(url);
-                  setIsDownloadCompleted(true);
-                }}
-                style={{ backgroundColor: isDownloadCompleted ? "#35ad8990" : "#3dd8a990" }}
-              >
-                <DictImage style={{ width: "4rem" }} src={isDownloadCompleted ? checkIcon : downloadIcon} />
-                {isDownloadCompleted ? "다운로드 성공!" : "다운로드"}
-              </DictPanelButton>
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    setIsDownloadCompleted(true);
+                  }}
+                  style={{ backgroundColor: isDownloadCompleted ? "#2c816890" : "#3dd8a990", alignItems: "center", margin: "2rem", fontSize: "5rem" }}
+                >
+                  <DictImage style={{ width: "5rem" }} src={isDownloadCompleted ? checkIcon : downloadIcon} />
+                  {isDownloadCompleted ? "다운로드 성공!" : "사전 다운로드"}
+                </DictPanelButton>
+              </div>
             </div>
           </DictPanel>
         </DictPanelBackgroundBox>

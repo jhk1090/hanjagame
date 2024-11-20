@@ -15,9 +15,11 @@ import {
 import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { DictNewContext, IDictNewContext } from ".";
+import { useNavigate } from "react-router-dom";
 
 
 export const DictAddListPage = (props: { context: React.Context<IDictNewContext>; isModifying?: boolean; }) => {
+  const navigate = useNavigate();
   const {
     dict, dictForm: dictFormContext, dictFormPersist, setDictForm: setDictFormContext, setDictFormPersist, setTab, setDict,
   } = React.useContext(props.context);
@@ -29,7 +31,7 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
   const submitRef = React.useRef<HTMLFormElement>(null);
   return (
     <>
-      <PageTitle title={`사전 목록 | 한자 마당`} />
+      <PageTitle title={`사전 목록 | ${props.isModifying ? "사전 수정" : "사전 추가"} | 한자 마당`} />
       <DictMain style={{ paddingBottom: "100px" }}>
         <DictNewTitle>
           <span>字</span>
@@ -71,6 +73,7 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
               return (
                 <>
                   <Accordion
+                    id={`${datalinesKey}-group`}
                     key={datalinesKey}
                     datalines={datalines}
                     open={groupOpen[datalinesKey]}
@@ -80,23 +83,27 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
                     }}
                     top={
                       <div>
-                        <DictALButton
-                          type="button"
-                          style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30" }}
-                          onClick={(e) => {
-                            unregister(datalinesKey);
-                            delete groupOpen[datalinesKey];
-                            setGroupOpen(groupOpen);
-                            setDictForm((cur) => {
-                              const replaced = { ...cur };
-                              delete replaced[datalinesKey];
-                              return replaced;
-                            });
-                          }}
-                        >
-                          <DictALImage src={closeIcon} />
-                          삭제
-                        </DictALButton>
+                        {Object.keys(dictForm).length > 1 ? (
+                          <DictALButton
+                            type="button"
+                            style={{ backgroundColor: "#d83d3d90", border: "1px solid #d83d3d30" }}
+                            onClick={(e) => {
+                              unregister(datalinesKey);
+                              delete groupOpen[datalinesKey];
+                              setGroupOpen(groupOpen);
+                              setDictForm((cur) => {
+                                const replaced = { ...cur };
+                                delete replaced[datalinesKey];
+                                return replaced;
+                              });
+                            }}
+                          >
+                            <DictALImage src={closeIcon} />
+                            삭제
+                          </DictALButton>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     }
                   >
@@ -237,21 +244,6 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
                 </>
               );
             })}
-            <DictButton
-              type="button"
-              onClick={(e) => {
-                setDictForm((cur) => {
-                  const replaced = { ...cur };
-                  const key = uuidv4();
-                  replaced[key] = [uuidv4()];
-                  setGroupOpen((cur) => ({ ...cur, [key]: true }));
-                  return replaced;
-                });
-              }}
-            >
-              <DictImage src={plusIcon} />
-              그룹 추가
-            </DictButton>
           </form>
         </DictArticle>
       </DictMain>
@@ -268,8 +260,24 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
         >
           <DictImage src={closeIcon} /> 초기화
         </DictButton>
+        <DictButton
+          type="button"
+          onClick={(e) => {
+            const key = uuidv4();
+            setDictForm((cur) => {
+              const replaced = { ...cur };
+              replaced[key] = [uuidv4()];
+              setGroupOpen((cur) => ({ ...cur, [key]: true }));
+              return replaced;
+            });
+          }}
+          style={{ backgroundColor: "#3dc1d890" }}
+        >
+          <DictImage src={plusIcon} />
+          그룹 추가
+        </DictButton>
         <DictButton onClick={() => submitRef.current?.requestSubmit()} style={{ backgroundColor: "#5cd83d90", border: "1px solid #5cd83d30" }}>
-          <DictImage src={checkIcon} /> 저장 및 미리보기
+          <DictImage src={checkIcon} /> 저장
         </DictButton>
       </DictBottomBox>
     </>

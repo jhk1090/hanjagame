@@ -37,7 +37,7 @@ export const DictModifyPage = () => {
   >();
   const [tab, setTab] = React.useState<"configMetadata" | "addList" | "preview">("configMetadata");
 
-  const { setColorPair } = React.useContext(IndexContext);
+  const { setColorPair, setToastMessage } = React.useContext(IndexContext);
   const { dictName } = useParams<{ dictName: string; }>();
 
   React.useEffect(() => {
@@ -45,6 +45,7 @@ export const DictModifyPage = () => {
     const dictIntegration: Record<string, IDict> = { ...JSON.parse(localStorage.getItem("dict-common") ?? "{}"), ...JSON.parse(localStorage.getItem("dict-custom") ?? "{}") };
     if (dictName === undefined || dictIntegration[dictName] === undefined ) {
       navigate("/dict", { replace: true });
+      setToastMessage(["경로에 해당하는 사전을 찾을 수 없습니다!"])
       return;
     }
 

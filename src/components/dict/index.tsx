@@ -65,12 +65,17 @@ export const DictToViewBox = styled.div`
 `
 
 export const DictToView = styled(Button)`
+  display: block;
   padding: 2rem;
   font-size: 5rem;
   font-weight: 800;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  word-break: break-all;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background-color: rgba(255, 255, 255, 0.4);
-`
+`;
 
 export const DictParagraph = styled(Paragraph)`
   margin: 0;

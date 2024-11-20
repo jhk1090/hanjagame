@@ -61,6 +61,8 @@ export const DictNewGroupBoxMain = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-start;
+  overflow: auto;
+  overflow-y: hidden;
 `
 
 export const DictNewGroupBoxTitle = styled.h2`
@@ -215,11 +217,11 @@ const StyledAccordion = styled.div<{ $length: number; }>`
   }
 `;
 
-export const Accordion = (props: { top: JSX.Element; title?: string; datalines: string[]; open: boolean; onClick: () => void, children: JSX.Element }) => {
+export const Accordion = (props: { id?: string; top: JSX.Element; title?: string; datalines: string[]; open: boolean; onClick: () => void, children: JSX.Element }) => {
   const contentRef = React.useRef<HTMLDivElement>(null);
   return (
     <>
-      <StyledAccordion $length={props.datalines.length}>
+      <StyledAccordion id={props.id} $length={props.datalines.length}>
         <DictNewGroupBox onClick={props.onClick} className={props.open ? "open" : ""}>
           <DictNewGroupBoxTop>
             <div style={{ display: "flex", flexDirection: "row", gap: "4rem" }}>
