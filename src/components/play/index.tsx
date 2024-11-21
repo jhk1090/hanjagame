@@ -177,3 +177,51 @@ export const PlayAfterButtonSet = styled.div`
   flex-direction: row;
   justify-content: space-around;
 `
+
+export const PlayHeightWarning = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  transform: translate(50%, -50%);
+  background-color: #000000aa;
+  border-radius: 2rem;
+  padding: 7rem 2rem 7rem 2rem;
+  z-index: 7000;
+  color: #fffffff0;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: center;
+  backdrop-filter: blur(1px);
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 769px) {
+    width: 700px;
+  }
+
+  h1 {
+    all: unset;
+    font-weight: 800;
+    font-size: 10rem;
+  }
+
+  h2 {
+    all: unset;
+    display: block;
+    font-weight: 800;
+    font-size: 7rem;
+  }
+
+  span {
+    font-size: 4rem;
+  }
+
+  div {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+  }
+`;

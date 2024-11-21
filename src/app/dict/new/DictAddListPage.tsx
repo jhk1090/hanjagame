@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { v4 as uuidv4 } from "uuid";
 import { DictNewContext, IDictNewContext } from ".";
 import { useNavigate } from "react-router-dom";
+import { PlayHeightWarning } from "../../../components/play";
 
 
 export const DictAddListPage = (props: { context: React.Context<IDictNewContext>; isModifying?: boolean; }) => {
@@ -235,6 +236,7 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
                             return replaced;
                           });
                         }}
+                        style={{ backgroundColor: "#3dc1d890" }}
                       >
                         <DictALImage src={plusIcon} />
                         한자 추가

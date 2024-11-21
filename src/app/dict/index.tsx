@@ -68,7 +68,9 @@ export const DictPage = () => {
           </DictSubTitle>
           <DictToViewBox>
             {Object.entries(dictCommon).map(([key, value]) => (
-              <DictToView key={key} onClick={() => navigate(`view/${key}`)}>字 {value.name}</DictToView>
+              <DictToView key={key} onClick={() => navigate(`view/${key}`)}>
+                字 {value.name}
+              </DictToView>
             ))}
           </DictToViewBox>
           <DictSubTitle>
@@ -244,23 +246,6 @@ export const DictPage = () => {
             사전 공유는 <b>각 사전 조회 페이지</b>에서 <b>공유하기</b> 버튼을 눌러 사전을 다운받을 수 있습니다.
             <br></br>
             <span style={{ color: "#00000090", fontStyle: "italic", fontSize: "3.5rem" }}>부수.dict 형식의 사전을 업로드하세요!</span>
-            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-              <DictPanelButton
-                onClick={() => {
-                  uploadRef.current?.click();
-                }}
-                style={{
-                  border: isFileUploadFailed ? "2px solid #ff4747" : "",
-                  backgroundColor: "#3dd8a990",
-                  alignItems: "center",
-                  margin: "2rem",
-                  fontSize: "5rem",
-                }}
-              >
-                <DictImage style={{ width: "5rem" }} src={shareIcon} />
-                파일 불러오기
-              </DictPanelButton>
-            </div>
             <input
               type="file"
               accept=".dict"
@@ -288,6 +273,23 @@ export const DictPage = () => {
               style={{ visibility: "hidden", width: "0px", height: "0px" }}
             />
             {isFileUploadFailed ? <span style={{ color: "#ff4747", fontSize: "3.5rem" }}>잘못된 파일. 업로드 중 문제가 발생했습니다!</span> : <> </>}
+          </div>
+          <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
+            <DictPanelButton
+              onClick={() => {
+                uploadRef.current?.click();
+              }}
+              style={{
+                border: isFileUploadFailed ? "2px solid #ff4747" : "",
+                backgroundColor: "#3dd8a990",
+                alignItems: "center",
+                margin: "2rem",
+                fontSize: "5rem",
+              }}
+            >
+              <DictImage style={{ width: "5rem" }} src={shareIcon} />
+              파일 불러오기
+            </DictPanelButton>
           </div>
         </DictPanel>
       </DictPanelBackgroundBox>

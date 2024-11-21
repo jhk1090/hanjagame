@@ -158,8 +158,8 @@ export const DictPanel = styled.div`
   top: 50%;
   right: 50%;
   transform: translate(50%, -50%);
-  border: 3px solid rgba(255, 189, 66, 0.9);
-  background-color: rgba(255, 213, 124, 0.9);
+  border: 3px solid rgba(255, 189, 66, 1);
+  background-color: rgba(255, 213, 124, 1);
   border-radius: 2rem;
   padding: 3rem;
   
@@ -168,7 +168,7 @@ export const DictPanel = styled.div`
   }
 
   @media only screen and (min-width: 769px) {
-    width: 600px;
+    width: 768px;
   }
 
   h2 {

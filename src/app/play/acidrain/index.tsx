@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { Input, InputGuide, Label, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../../components/play";
+import { Input, InputGuide, Label, PlayHeightWarning, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../../components/play";
 import { Stage, Text } from "@pixi/react";
 import React from "react";
 import { IData } from "../../../database/busu";
@@ -25,7 +25,7 @@ function getRandomArbitrary(min: number, max: number) {
 }
 
 export const PlayAcidrainPage = () => {
-  const { setColorPair } = React.useContext(IndexContext);
+  const { setColorPair, setToastMessage } = React.useContext(IndexContext);
   const navigate = useNavigate();
 
   const [stageKey, setStageKey] = React.useState<IData[]>([]);
@@ -47,11 +47,10 @@ export const PlayAcidrainPage = () => {
   const [timerElement, setTimerElement] = React.useState(<></>);
 
   const [gameWidth, setGameWidth] = React.useState((window.innerWidth < 600 ? window.innerWidth - 50 : 600));
-  const [gameHeight, setGameHeight] = React.useState((window.innerHeight > 650 ? window.innerHeight - 50 : 600));
+  const [gameHeight, setGameHeight] = React.useState(window.innerHeight > 650 ? (window.innerHeight > 1050 ? 1000 : window.innerHeight - 50) : 600);
 
   const updateDimension = () => {
-    setGameWidth((window.innerWidth < 600 ? window.innerWidth - 50 : 600))
-    setGameHeight((window.innerHeight > 650 ? window.innerHeight - 50 : 600))
+    setToastMessage(["화면 크기를 조정해도 게임 크기는 바뀌지 않습니다!"])
   }
 
   React.useEffect(() => {
