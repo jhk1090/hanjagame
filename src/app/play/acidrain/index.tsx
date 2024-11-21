@@ -50,7 +50,9 @@ export const PlayAcidrainPage = () => {
   const [gameHeight, setGameHeight] = React.useState(window.innerHeight > 650 ? (window.innerHeight > 1050 ? 1000 : window.innerHeight - 50) : 600);
 
   const updateDimension = () => {
-    setToastMessage(["화면 크기를 조정해도 게임 크기는 바뀌지 않습니다!"])
+    if (!/iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent)) {
+      setToastMessage(["화면 크기를 조정해도 게임 크기는 바뀌지 않습니다!"])
+    }
   }
 
   React.useEffect(() => {
