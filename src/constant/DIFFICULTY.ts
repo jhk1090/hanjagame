@@ -1,5 +1,10 @@
-export const DIFFICULTY_VERY_EASY = 3.8;
-export const DIFFICULTY_EASY = 3.1;
-export const DIFFICULTY_NORMAL = 2.4;
-export const DIFFICULTY_HARD = 1.7;
-export const DIFFICULTY_VERY_HARD = 1;
+export const INTERVAL_VERY_EASY = 4.1;
+export const SPEED_VERY_EASY = 0.12;
+export const INTERVAL_EASY = 4;
+export const SPEED_EASY = 0.17;
+export const INTERVAL_NORMAL = 2.3;
+export const SPEED_NORMAL = 0.22;
+export const INTERVAL_HARD = 2;
+export const SPEED_HARD = 0.28;
+export const INTERVAL_VERY_HARD = 1.25;
+export const SPEED_VERY_HARD = 0.30;

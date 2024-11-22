@@ -227,3 +227,5 @@ export const PlayHeightWarning = styled.div`
     gap: 1rem;
   }
 `;
+
+export const PlayPauseScreen = styled(PlayHeightWarning)``

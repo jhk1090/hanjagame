@@ -2,11 +2,11 @@ import { SubTitle } from "../../components";
 import { PlayStatBlock, PlayStatBlockCenter, PlayStatBlockSmall, PlayStatBlockSmallLeft } from "../../components/play";
 import { ReadyButton, ReadyImage, ReadyLink } from "../../components/ready";
 import { IData } from "../../database/busu";
-import { DIFFICULTY_EASY, DIFFICULTY_HARD, DIFFICULTY_NORMAL, DIFFICULTY_VERY_HARD } from "../../constant/DIFFICULTY";
+import { INTERVAL_EASY, INTERVAL_HARD, INTERVAL_NORMAL, INTERVAL_VERY_EASY, INTERVAL_VERY_HARD } from "../../constant/DIFFICULTY";
 import { useMediaQuery } from "react-responsive";
 import { leftChevron } from "../../constant/IMAGE_PATH";
 
-export const StatPanel = ({ afterStatWrong, stageDifficulty, stageLimit, count }: { afterStatWrong: IData[]; stageDifficulty: number; stageLimit: number; count: number; }) => {
+export const StatPanel = ({ afterStatWrong, stageInterval, stageLimit, count }: { afterStatWrong: IData[]; stageInterval: number; stageLimit: number; count: number; }) => {
   const maxWidth = useMediaQuery({ query: "(min-width: 1300px)"})
   const middleWidth = useMediaQuery({ query: "(min-width: 650px)"})
   return (
@@ -21,15 +21,16 @@ export const StatPanel = ({ afterStatWrong, stageDifficulty, stageLimit, count }
           </ReadyLink>
           <p>
             <SubTitle>
-              {stageDifficulty <= DIFFICULTY_VERY_HARD
+              {stageInterval === INTERVAL_VERY_HARD
                 ? "😱 매우 어려움"
-                : stageDifficulty <= DIFFICULTY_HARD
+                : stageInterval === INTERVAL_HARD
                 ? "😨 어려움"
-                : stageDifficulty <= DIFFICULTY_NORMAL
+                : stageInterval === INTERVAL_NORMAL
                 ? "😐 보통"
-                : stageDifficulty <= DIFFICULTY_EASY
+                : stageInterval === INTERVAL_EASY
                 ? "😊 쉬움"
-                : "😆 매우 쉬움"}
+                : stageInterval === INTERVAL_VERY_EASY
+                ? "😆 매우 쉬움" : "🗿 사용자 지정"}
             </SubTitle>
           </p>
           <p>
@@ -52,15 +53,16 @@ export const StatPanel = ({ afterStatWrong, stageDifficulty, stageLimit, count }
           </PlayStatBlockSmallLeft>
           <PlayStatBlockSmall>
             <div>
-              {stageDifficulty <= DIFFICULTY_VERY_HARD
+              {stageInterval === INTERVAL_VERY_HARD
                 ? "😱"
-                : stageDifficulty <= DIFFICULTY_HARD
+                : stageInterval === INTERVAL_HARD
                 ? "😨"
-                : stageDifficulty <= DIFFICULTY_NORMAL
+                : stageInterval === INTERVAL_NORMAL
                 ? "😐"
-                : stageDifficulty <= DIFFICULTY_EASY
+                : stageInterval === INTERVAL_EASY
                 ? "😊"
-                : "😆"}
+                : stageInterval === INTERVAL_VERY_EASY
+                ? "😆" : "🗿"}
             </div>
             <div>
               ❌ {afterStatWrong.length}/{stageLimit}

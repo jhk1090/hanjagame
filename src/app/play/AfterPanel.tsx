@@ -21,16 +21,18 @@ const AfterPanelBackground = styled.div`
 
 export const AfterPanel = ({
   property,
-  difficulty,
+  interval,
   limit,
+  speed,
   count,
   rightItems,
   isSound,
   wrongItems,
 }: {
   property: IData[];
-  difficulty: number;
+  interval: number;
   limit: number;
+  speed: number;
   count: number;
   isSound: boolean;
   rightItems: Record<string, { dict: IData; count: number }>;
@@ -66,8 +68,8 @@ export const AfterPanel = ({
                   return;
                 }
 
-                localStorage.setItem("dict-play", JSON.stringify({ key: property, difficulty: difficulty, limit: limit, isSound }));
-                navigate(`/play/acidrain`);
+                localStorage.setItem("dict-play", JSON.stringify({ key: property, interval, limit, speed, isSound }));
+                navigate(`/play/acidrain`, { replace: true });
                 location.reload();
               }}
             >

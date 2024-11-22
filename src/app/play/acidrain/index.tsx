@@ -1,17 +1,17 @@
 import { useRef } from "react";
-import { Input, InputGuide, Label, PlayHeightWarning, PlayImage, PlayInputFieldBlock, PlayMain, PlayStatBlock } from "../../../components/play";
+import { Input, InputGuide, Label, PlayHeightWarning, PlayImage, PlayInputFieldBlock, PlayMain, PlayPauseScreen, PlayStatBlock } from "../../../components/play";
 import { Stage, Text } from "@pixi/react";
 import React from "react";
 import { IData } from "../../../database/busu";
 import { v4 } from "uuid";
 import { TextStyle } from "pixi.js";
-import { ReadyButton, ReadyLink } from "../../../components/ready";
+import { ReadyButton, ReadyImage, ReadyLink } from "../../../components/ready";
 import { Button, PageTitle, SubTitle } from "../../../components";
 import { AfterPanel } from "../AfterPanel";
 import { IndexContext } from "../..";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import { enterIcon } from "../../../constant/IMAGE_PATH";
+import { enterIcon, startIcon } from "../../../constant/IMAGE_PATH";
 import { StatPanel } from "../StatPanel";
 
 function getRandomInt(min: number, max: number) {
@@ -29,7 +29,8 @@ export const PlayAcidrainPage = () => {
   const navigate = useNavigate();
 
   const [stageKey, setStageKey] = React.useState<IData[]>([]);
-  const [stageDifficulty, setStageDifficulty] = React.useState<number>(0);
+  const [stageInterval, setStageInterval] = React.useState<number>(0);
+  const [stageSpeed, setStageSpeed] = React.useState<number>(0.25);
   const [stageLimit, setStageLimit] = React.useState(5);
   const [stageIsSound, setStageIsSound] = React.useState(true);
   const [isInit, setIsInit] = React.useState(false);
@@ -49,6 +50,8 @@ export const PlayAcidrainPage = () => {
   const [gameWidth, setGameWidth] = React.useState((window.innerWidth < 600 ? window.innerWidth - 50 : 600));
   const [gameHeight, setGameHeight] = React.useState(window.innerHeight > 650 ? (window.innerHeight > 1050 ? 1000 : window.innerHeight - 50) : 600);
 
+  const [isPause, setIsPause] = React.useState(false);
+
   const updateDimension = () => {
     if (!/iPhone|iPad|iPod|Android/i.test(window.navigator.userAgent)) {
       setToastMessage(["화면 크기를 조정해도 게임 크기는 바뀌지 않습니다!"])
@@ -56,10 +59,30 @@ export const PlayAcidrainPage = () => {
   }
 
   React.useEffect(() => {
+    if (afterStatWrong.length === stageLimit) {
+      return;
+    }
+    
     window.addEventListener("resize", updateDimension);
 
     return () => window.removeEventListener("resize", updateDimension) 
   }, [])
+
+  const updateVisibility = () => {
+    if (document.visibilityState === "hidden") {
+      setIsPause(true)
+    }
+  }
+
+  React.useEffect(() => {
+    if (afterStatWrong.length === stageLimit) {
+      return;
+    }
+
+    document.addEventListener("visibilitychange", updateVisibility);
+
+    return () => document.removeEventListener("visibilitychange", updateVisibility);
+  })
 
   const generateHanja = () => {
     const data = stageKey[getRandomInt(0, stageKey.length - 1)];
@@ -70,7 +93,7 @@ export const PlayAcidrainPage = () => {
       data,
       x: getRandomArbitrary(0, gameWidth - text.length * 50),
       y: 0,
-      speed: 0.25,
+      speed: stageSpeed,
     };
     setHanjas((prev) => [...prev, newHanja]);
   };
@@ -97,7 +120,8 @@ export const PlayAcidrainPage = () => {
     localStorage.setItem("dict-play-archive", dictPlay ?? "");
     if (dictPlay !== null) {
       setStageKey(JSON.parse(dictPlay).key);
-      setStageDifficulty(JSON.parse(dictPlay).difficulty);
+      setStageInterval(Number(JSON.parse(dictPlay).interval));
+      setStageSpeed(Number(JSON.parse(dictPlay).speed));
       setStageLimit(Number(JSON.parse(dictPlay).limit));
       setStageIsSound(JSON.parse(dictPlay).isSound);
       setIsInit(true);
@@ -107,13 +131,13 @@ export const PlayAcidrainPage = () => {
   }, []);
 
   React.useEffect(() => {
-    if (!isInit || isAfter) {
+    if (!isInit || isAfter || isPause) {
       return;
     }
 
     const timer = setInterval(updateTimer, 10);
     if (isCountdownInit) {
-      const interval = setInterval(generateHanja, stageDifficulty * 1000);
+      const interval = setInterval(generateHanja, stageInterval * 1000);
       const animation = setInterval(updateHanjas, 4);
 
       return () => {
@@ -123,7 +147,7 @@ export const PlayAcidrainPage = () => {
       };
     }
     return () => clearInterval(timer);
-  }, [isInit, isAfter, isCountdownInit]);
+  }, [isInit, isAfter, isPause, isCountdownInit]);
 
   React.useEffect(() => {
     if (afterStatWrong.length === 0) {
@@ -164,7 +188,7 @@ export const PlayAcidrainPage = () => {
       setIsAfter(true);
       setAfterPanel(
         <>
-          <AfterPanel property={stageKey} difficulty={stageDifficulty} count={count} limit={stageLimit} wrongItems={wrongItems} isSound={stageIsSound} rightItems={rightItems} />
+          <AfterPanel property={stageKey} interval={stageInterval} speed={stageSpeed} count={count} limit={stageLimit} wrongItems={wrongItems} isSound={stageIsSound} rightItems={rightItems} />
         </>
       );
     }
@@ -289,10 +313,21 @@ export const PlayAcidrainPage = () => {
           ))}
           {timerElement}
         </Stage>
-        <StatPanel count={count} afterStatWrong={afterStatWrong} stageLimit={stageLimit} stageDifficulty={stageDifficulty} />
+        <StatPanel { ...{ count, afterStatWrong, stageInterval, stageLimit } } />
         {afterPanel}
         {inputElement}
       </PlayMain>
+      <PlayPauseScreen style={isPause ? { display: "flex" } : { display: "none" }}>
+        <h1>!</h1>
+        <h2>게임이 중지되었습니다!</h2>
+        <span>게임 실행 중 다른 창/탭을 볼 경우 자동 중지됩니다.</span>
+        <div>
+          <Button style={{ backgroundColor: "#25810e", fontSize: "6.5rem", padding: "2rem", fontWeight: 800 }} onClick={() => setIsPause(false)}>
+            <PlayImage src={startIcon} style={{ transform: "rotate(0deg)", filter: "brightness(0) invert(1)", width: "8rem" }} />
+            게임 시작!
+          </Button>
+        </div>
+      </PlayPauseScreen>
     </>
   );
 };
