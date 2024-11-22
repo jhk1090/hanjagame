@@ -1,11 +1,12 @@
 import React from "react";
-import { PageTitle } from "../../../components";
+import { PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle } from "../../../components";
 import { useNavigate } from "react-router-dom";
 import { IDict } from "../../../database/busu";
 import { ReadyArticle, ReadyButton, ReadyDescription, ReadyImage, ReadyLink, ReadyMain, ReadySubTitle, ReadyTitle } from "../../../components/ready";
 import { leftChevron, plusIcon, startIcon } from "../../../constant/IMAGE_PATH";
 import { DictToView, DictToViewBox } from "../../../components/dict";
 import { ReadyAcidrainContext } from ".";
+import styled from "styled-components";
 
 export const DictSelectionPage = () => {
   const { setDict, setTab } = React.useContext(ReadyAcidrainContext);
@@ -16,8 +17,28 @@ export const DictSelectionPage = () => {
     <>
       <PageTitle title="사전 선택 | 산성비 게임 | 한자 마당" />
       <ReadyMain>
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visitable" />
+            <StepperJoint $type="unreachable" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation>
+              <StepperIndicator $type="visited">1</StepperIndicator>
+              사전 선택
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="visitable">2</StepperIndicator>
+              한자 추가 또는 삭제
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="unreachable">3</StepperIndicator>
+              게임 설정하기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
         <ReadyTitle>
-          <span>樂</span>사전 선택 <i>(1/3)</i>
+          <span>樂</span>사전 선택
         </ReadyTitle>
         <ReadyDescription>게임에서 사용될 사전을 선택하세요. 사전을 선택하면 그 사전 내에 있는 한자가 떨어지게 됩니다.</ReadyDescription>
         <ReadyButton

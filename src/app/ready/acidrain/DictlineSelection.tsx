@@ -1,5 +1,5 @@
 import React from "react";
-import { PageTitle } from "../../../components";
+import { PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle } from "../../../components";
 import { useNavigate } from "react-router-dom";
 import { IData } from "../../../database/busu";
 import { Dict, DictForm, DictHorizontal, DictSound, DictViewAccordion } from "../../../components/dict/view";
@@ -33,13 +33,40 @@ export const DictlineSelectionPage = () => {
   if (dict === undefined) {
     return <></>;
   }
-
   return (
     <>
       <PageTitle title="한자 추가 또는 삭제 | 산성비 게임 | 한자 마당" />
       <ReadyMain style={{ paddingBottom: "200px" }}>
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visited" />
+            <StepperJoint $type="visitable" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation
+              onClick={() => {
+                unregister();
+                setDict(undefined);
+                setTab("dictSelection");
+              }}
+            >
+              <StepperIndicator $clickable $type="visited">1</StepperIndicator>
+              사전 선택
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="visited">2</StepperIndicator>
+              한자 추가 또는 삭제
+            </StepperLocation>
+            <StepperLocation onClick={() => {
+                submitRef.current?.requestSubmit();
+              }}>
+              <StepperIndicator $clickable $type="visitable">3</StepperIndicator>
+              게임 설정하기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
         <ReadyTitle>
-          <span>樂</span>한자 추가 또는 삭제 <i>(2/3)</i>
+          <span>樂</span>한자 추가 또는 삭제
         </ReadyTitle>
         <ReadyDescription>게임에서 떨어질 한자를 직접 선택하거나 삭제할 수 있습니다. 체크박스를 눌러 확인해보세요.</ReadyDescription>
         <ReadyButton
@@ -54,8 +81,10 @@ export const DictlineSelectionPage = () => {
           이전으로 (사전 선택)
         </ReadyButton>
         <ReadyArticle>
-          <span style={{ backgroundColor: "#ffffff90", padding: "2rem", borderRadius: "2rem", fontSize: "7.5rem", fontWeight: 800, width: "max-content" }}>
-            "字 {dict.name}" <span style={{fontWeight: 300, fontSize: "7rem"}}>목록</span>
+          <span
+            style={{ backgroundColor: "#ffffff90", padding: "2rem", borderRadius: "2rem", fontSize: "7.5rem", fontWeight: 800, width: "max-content" }}
+          >
+            "字 {dict.name}" <span style={{ fontWeight: 300, fontSize: "7rem" }}>목록</span>
           </span>
           <form
             ref={submitRef}

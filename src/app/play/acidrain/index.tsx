@@ -6,7 +6,7 @@ import { IData } from "../../../database/busu";
 import { v4 } from "uuid";
 import { TextStyle } from "pixi.js";
 import { ReadyButton, ReadyLink } from "../../../components/ready";
-import { Button, SubTitle } from "../../../components";
+import { Button, PageTitle, SubTitle } from "../../../components";
 import { AfterPanel } from "../AfterPanel";
 import { IndexContext } from "../..";
 import { useNavigate } from "react-router-dom";
@@ -101,6 +101,8 @@ export const PlayAcidrainPage = () => {
       setStageLimit(Number(JSON.parse(dictPlay).limit));
       setStageIsSound(JSON.parse(dictPlay).isSound);
       setIsInit(true);
+    } else {
+      navigate("/")
     }
   }, []);
 
@@ -267,6 +269,7 @@ export const PlayAcidrainPage = () => {
   const stageRef = useRef<Stage>(null);
   return (
     <>
+      <PageTitle title={`산성비 게임 | 한자 마당`} />
       <PlayMain>
         <Stage
           ref={stageRef}

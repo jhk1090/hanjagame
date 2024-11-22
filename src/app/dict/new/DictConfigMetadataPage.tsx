@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PageTitle } from "../../../components";
+import { PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle } from "../../../components";
 import { DictDescription } from "../../../components/dict/view";
 import { DictArticle, DictButton, DictImage, DictLink, DictMain } from "../../../components/dict";
 import { checkIcon, leftChevron } from "../../../constant/IMAGE_PATH";
@@ -92,10 +92,35 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
     <>
       <PageTitle title={`사전 정보 | ${props.isModifying ? "사전 수정" : "사전 추가"} | 한자 마당`} />
       <DictMain>
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visitable" />
+            <StepperJoint $type="unreachable" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation>
+              <StepperIndicator $type="visited">1</StepperIndicator>
+              사전 정보
+            </StepperLocation>
+            <StepperLocation
+              onClick={() => {
+                submitRef.current?.requestSubmit();
+              }}
+            >
+              <StepperIndicator $clickable $type="visitable">
+                2
+              </StepperIndicator>
+              사전 목록
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="unreachable">3</StepperIndicator>
+              미리보기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
         <DictNewTitle>
           <span>字</span>
           <span>사전 정보</span>
-          <i>(1/3)</i>
         </DictNewTitle>
         <DictDescription>사전 정보를 입력해주세요!</DictDescription>
         <DictLink to={"/dict"}>
@@ -115,29 +140,38 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
             <DictNewSector>
               <DictNewCMLabel htmlFor="name">이름</DictNewCMLabel>
               <DictNewCMInput
-                {...register("name", { required: { value: true, message: "값을 입력하세요!" }, maxLength: { value: 50, message: "최대 50자입니다." }, onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
-                  setValue(`name`, event.currentTarget.value.trim());
-                } })}
+                {...register("name", {
+                  required: { value: true, message: "값을 입력하세요!" },
+                  maxLength: { value: 50, message: "최대 50자입니다." },
+                  onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                    setValue(`name`, event.currentTarget.value.trim());
+                  },
+                })}
                 style={{ border: formState?.errors?.name?.message ? "2px solid red" : "" }}
                 autoComplete="off"
                 placeholder="사전의 이름"
                 id="name"
-                type="text" />
+                type="text"
+              />
               <DictNewCMError>{formState?.errors?.name?.message ?? ""}</DictNewCMError>
             </DictNewSector>
             <DictNewSector>
               <DictNewCMLabel htmlFor="description">설명</DictNewCMLabel>
-              <DictNewCMInput {...register("description", { onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
-                  setValue(`description`, event.currentTarget.value.trim());
-                }})} autoComplete="off" placeholder="사전의 설명" id="description" type="text" />
+              <DictNewCMInput
+                {...register("description", {
+                  onBlur: (event: React.ChangeEvent<HTMLInputElement>) => {
+                    setValue(`description`, event.currentTarget.value.trim());
+                  },
+                })}
+                autoComplete="off"
+                placeholder="사전의 설명"
+                id="description"
+                type="text"
+              />
             </DictNewSector>
             <DictNewSector>
               <DictNewCMLabel htmlFor="edit">수정 설정</DictNewCMLabel>
-              <DictNewCMSelect
-                {...register("edit")}
-                id="edit"
-                defaultValue={"disallow"}
-              >
+              <DictNewCMSelect {...register("edit")} id="edit" defaultValue={"disallow"}>
                 <option value={"disallow"}>🔒 수정 허용하지 않음</option>
                 <option value={"allow"}>✅ 수정 허용</option>
               </DictNewCMSelect>
@@ -146,7 +180,7 @@ export const DictConfigMetadataPage = (props: { context: React.Context<IDictNewC
         </form>
       </DictMain>
       <DictBottomBox>
-        <DictButton onClick={()=>submitRef.current?.requestSubmit()} style={{ backgroundColor: "#5cd83d90", border: "1px solid #5cd83d30" }}>
+        <DictButton onClick={() => submitRef.current?.requestSubmit()} style={{ backgroundColor: "#5cd83d90", border: "1px solid #5cd83d30" }}>
           <DictImage src={checkIcon} /> 저장 및 다음으로
         </DictButton>
       </DictBottomBox>

@@ -1,5 +1,5 @@
 import React from "react";
-import { PageTitle } from "../../../components";
+import { PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle } from "../../../components";
 import { DictDescription } from "../../../components/dict/view";
 import { DictArticle, DictButton, DictImage, DictMain } from "../../../components/dict";
 import { checkIcon, closeIcon, leftChevron, plusIcon } from "../../../constant/IMAGE_PATH";
@@ -34,10 +34,43 @@ export const DictAddListPage = (props: { context: React.Context<IDictNewContext>
     <>
       <PageTitle title={`사전 목록 | ${props.isModifying ? "사전 수정" : "사전 추가"} | 한자 마당`} />
       <DictMain style={{ paddingBottom: "100px" }}>
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visited" />
+            <StepperJoint $type="visitable" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation
+              onClick={() => {
+                setDictFormPersist(undefined);
+                setDictFormContext(undefined);
+                setTab("configMetadata");
+              }}
+            >
+              <StepperIndicator $clickable $type="visited">
+                1
+              </StepperIndicator>
+              사전 정보
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="visited">2</StepperIndicator>
+              사전 목록
+            </StepperLocation>
+            <StepperLocation
+              onClick={() => {
+                submitRef.current?.requestSubmit();
+              }}
+            >
+              <StepperIndicator $clickable $type="visitable">
+                3
+              </StepperIndicator>
+              미리보기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
         <DictNewTitle>
           <span>字</span>
           <span>사전 목록</span>
-          <i>(2/3)</i>
         </DictNewTitle>
         <DictDescription>나만의 사전을 만들어보세요!</DictDescription>
         <DictButton

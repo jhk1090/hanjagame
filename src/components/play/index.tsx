@@ -39,6 +39,7 @@ export const PlayMain = styled(Main)`
   position: relative;
   overflow: visible;
   height: 100%;
+  justify-content: center;
 
   @media only screen and (max-width: 768px) {
     width: 100%;
@@ -72,13 +73,14 @@ export const PlayStatBlock = styled.div`
   border-radius: 2rem;
   padding: 2rem;
   position: absolute;
-  bottom: 40rem;
+  top: 50%;
   width: fit-content;
   height: fit-content;
   z-index: 1001;
   display: flex;
   flex-direction: column;
   left: -45rem;
+  transform: translateY(-50%);
 `
 
 export const PlayStatBlockSmallLeft = styled.div`

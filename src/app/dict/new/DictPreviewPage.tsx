@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { PageTitle } from "../../../components";
+import { PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle } from "../../../components";
 import { Dict, DictDefine, DictDescription, DictForm, DictHorizontal, DictSound, DictViewAccordion } from "../../../components/dict/view";
 import { useNavigate, useParams } from "react-router-dom";
 import { IData, IDict } from "../../../database/busu";
@@ -38,25 +38,49 @@ export const DictPreviewPage = (props: { context: React.Context<IDictNewContext>
     <>
       <PageTitle title={`미리보기 "${dictExplicit.name}" | ${props.isModifying ? "사전 수정" : "사전 추가"} | 한자 마당`} />
       <DictMain>
-        <DictNewTitle>
-          <span>字</span>
-          <span>미리보기 "{dictExplicit.name}"</span>
-          <i>(3/3)</i>
-        </DictNewTitle>
-        <DictDescription>{dictExplicit.description}</DictDescription>
-
-        <DictArticle>
-          <div style={{ display: "flex", flexDirection: "row", gap: "2rem", marginBottom: "2rem" }}>
-            <DictButton
-              style={{ width: "max-content", backgroundColor: "#ffffff70" }}
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visited" />
+            <StepperJoint $type="visited" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation
               onClick={() => {
-                setTab("addList");
+                setTab("configMetadata");
               }}
             >
-              <DictImage src={leftChevron} />
-              이전으로 (사전 목록 추가)
-            </DictButton>
-          </div>
+              <StepperIndicator $clickable $type="visited">
+                1
+              </StepperIndicator>
+              사전 정보
+            </StepperLocation>
+            <StepperLocation onClick={() => setTab("addList")}>
+              <StepperIndicator $clickable $type="visited">
+                2
+              </StepperIndicator>
+              사전 목록
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="visited">3</StepperIndicator>
+              미리보기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
+        <DictNewTitle>
+          <span>字</span>
+          <span>{dictExplicit.name}</span>
+        </DictNewTitle>
+        <DictDescription>{dictExplicit.description}</DictDescription>
+        <DictButton
+          style={{ width: "max-content", backgroundColor: "#ffffff70" }}
+          onClick={() => {
+            setTab("addList");
+          }}
+        >
+          <DictImage src={leftChevron} />
+          이전으로 (사전 목록 추가)
+        </DictButton>
+        <DictArticle>
           {Object.keys(dictExplicit.content).map((group) => (
             <>
               <DictViewAccordion

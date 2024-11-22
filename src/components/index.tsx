@@ -1,4 +1,4 @@
-import { styled } from "styled-components";
+import { css, styled } from "styled-components";
 import { Helmet } from "react-helmet";
 
 export const PageTitle = ({ title }: { title: string; }) => {
@@ -52,10 +52,11 @@ export const Button = styled.button`
   border-radius: 2rem;
   font-size: 5rem;
   font-weight: 400;
+  backdrop-filter: blur(2px);
 
   &:hover {
     font-weight: 800;
-    animation: 0.2s cubic-bezier(0.47, 0, 0.745, 0.715) hover;
+    animation: 0.05s cubic-bezier(0.47, 0, 0.745, 0.715) hover;
     animation-fill-mode: both;
 
     span {
@@ -69,7 +70,7 @@ export const Button = styled.button`
       border: 1px solid transparent;
     }
     100% {
-      box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.75);
+      box-shadow: 0px 0px 5px .5px rgba(0, 0, 0, 0.75);
       border: 1px solid rgba(0, 0, 0, 0.2);
     }
   }
@@ -124,3 +125,82 @@ export const ToastMessageBox = styled.div`
     }
   }
 `;
+
+export const StepperJoint = styled.hr<IStepperIndicator>`
+  all: unset;
+  border-top: 3px solid ${(props) => props.$type === "visited" ? "#245aaa" : props.$type === "visitable" ? "#5182cc" : "#3f3f3f"};
+  width: 50%;
+`
+
+export const StepperLocation = styled.div`
+  position: relative;
+  font-size: 4rem;
+  width: 33.3%;
+  text-align: center;
+`
+
+interface IStepperIndicator {
+  $type: "visited" | "visitable" | "unreachable"
+  $clickable?: boolean;
+}
+
+export const StepperIndicator = styled.div<IStepperIndicator>`
+  position: absolute;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 30rem;
+  background-color: ${(props) => (props.$type === "visited" ? "#245aaa" : props.$type === "visitable" ? "#5182cc" : "#3f3f3f")};
+  top: -8rem;
+  right: 50%;
+  transform: translateX(50%);
+  font-size: 3.5rem;
+  color: #ffffffc1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ${(props) =>
+    props.$clickable
+      ? css`
+          &:hover {
+            font-weight: 800;
+            animation: 0.01s cubic-bezier(0.52, 0.55, 0.6, 0.95) stepperHover;
+            animation-fill-mode: both;
+
+            span {
+              transform: rotate(-10deg);
+            }
+          }
+        `
+      : ""}
+
+  @keyframes stepperHover {
+    0% {
+      box-shadow: 0px 0px 0px 0px #ffffff90;
+    }
+    100% {
+      box-shadow: 0px 0px 3px 5px #ffffff90;
+    }
+  }
+`;
+
+export const StepperMiddle = styled.div`
+  position: absolute;
+  top: 3rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  padding: 0rem 15%;
+`
+
+export const StepperBody = styled.div`
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  margin-top: 8rem;
+`
+
+export const StepperBox = styled.div`
+  position: relative;
+  margin: 1rem 0;
+`

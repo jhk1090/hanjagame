@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ReadyAcidrainContext } from ".";
 import { useForm } from "react-hook-form";
-import { Button, PageTitle, SubTitle } from "../../../components";
+import { Button, PageTitle, StepperBody, StepperBox, StepperIndicator, StepperJoint, StepperLocation, StepperMiddle, SubTitle } from "../../../components";
 import { ReadyArticle, ReadyButton, ReadyDescription, ReadyImage, ReadyMain, ReadyTitle } from "../../../components/ready";
 import { checkIcon, leftChevron, refreshIcon, startIcon } from "../../../constant/IMAGE_PATH";
 import { ReadyGameConfigInput, ReadyGameConfigInputDescription, ReadyGameConfigInputMetadataBox, ReadyGameConfigLabel, ReadyGameConfigSelect } from "../../../components/ready/acidrain/GameConfig";
@@ -14,7 +14,7 @@ import { PlayHeightWarning } from "../../../components/play";
 export const GameConfigPage = () => {
   const { setToastMessage } = useContext(IndexContext);
   const navigate = useNavigate();
-  const { dictConfig, setDictConfig, setTab } = React.useContext(ReadyAcidrainContext);
+  const { dictConfig, setDictConfig, setTab, setDict } = React.useContext(ReadyAcidrainContext);
   type TDictConfig = { difficulty: number; limit: number; isSound: number };
   const { register, handleSubmit, setValue } = useForm<TDictConfig>();
   const submitRef = React.useRef<HTMLFormElement>(null);
@@ -36,8 +36,37 @@ export const GameConfigPage = () => {
     <>
       <PageTitle title="게임 설정하기 | 산성비 게임 | 한자 마당" />
       <ReadyMain style={{ paddingBottom: "200px" }}>
+        <StepperBox key={"stepper"}>
+          <StepperMiddle>
+            <StepperJoint $type="visited" />
+            <StepperJoint $type="visited" />
+          </StepperMiddle>
+          <StepperBody>
+            <StepperLocation
+              onClick={() => {
+                setDict(undefined);
+                setDictConfig(undefined);
+                setTab("dictSelection");
+              }}
+            >
+              <StepperIndicator $clickable $type="visited">1</StepperIndicator>
+              사전 선택
+            </StepperLocation>
+            <StepperLocation onClick={() => {
+              setDictConfig(undefined);
+              setTab("dictlineSelection");
+            }}>
+              <StepperIndicator $clickable $type="visited">2</StepperIndicator>
+              한자 추가 또는 삭제
+            </StepperLocation>
+            <StepperLocation>
+              <StepperIndicator $type="visited">3</StepperIndicator>
+              게임 설정하기
+            </StepperLocation>
+          </StepperBody>
+        </StepperBox>
         <ReadyTitle>
-          <span>樂</span>게임 설정하기 <i>(3/3)</i>
+          <span>樂</span>게임 설정하기
         </ReadyTitle>
         <ReadyDescription>마지막 설정입니다! 게임 시작을 누르면 산성비 게임이 시작됩니다.</ReadyDescription>
         <ReadyButton

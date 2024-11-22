@@ -178,22 +178,11 @@ const TitleButton = styled(Button)`
 
   &:hover {
     font-weight: 800;
-    animation: 0.5s cubic-bezier(0.52, 0.55, 0.6, 0.95) hover;
+    animation: 0.2s cubic-bezier(0.52, 0.55, 0.6, 0.95) hover;
     animation-fill-mode: both;
 
     span {
       transform: rotate(-10deg);
-    }
-  }
-
-  @keyframes hover {
-    0% {
-      box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.75);
-      border: 1px solid transparent;
-    }
-    100% {
-      box-shadow: 0px 3px 3px 0px rgba(0, 0, 0, 0.75);
-      border: 1px solid rgba(0, 0, 0, 0.2);
     }
   }
 `;
