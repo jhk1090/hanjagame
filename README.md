@@ -5,4 +5,4 @@
 </div>
 
 한자 게임입니다!\
-웹사이트 주소: [hanja-game.netlify.app](hanja-game.netlify.app)
+웹사이트 주소: https://hanja-game.netlify.app
