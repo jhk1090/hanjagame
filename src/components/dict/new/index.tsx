@@ -3,6 +3,7 @@ import { Title } from "../..";
 import { DictButton, DictImage } from "..";
 import React from "react";
 import { leftChevron } from "../../../constant/IMAGE_PATH";
+import { CHARFONT } from "../../../constant/CHARFONT";
 
 export const DictNewInput = styled.input`
   all: unset;
@@ -30,8 +31,8 @@ export const DictNewLabel = styled.label`
 
 export const DictNewHanjaSpan = styled.span`
   font-size: 4.5rem;
-  font-weight: 800;
-  font-family: "hanyang";
+  font-weight: 900;
+  font-family: ${CHARFONT};
 `
 
 export const DictNewError = styled.span`

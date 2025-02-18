@@ -3,6 +3,7 @@ import { styled } from "styled-components";
 import { DictButton, DictImage } from "..";
 import { leftChevron } from "../../../constant/IMAGE_PATH";
 import { IData } from "../../../database/busu";
+import { CHARFONT } from "../../../constant/CHARFONT";
 
 export const Dict = styled.div`
   display: flex;
@@ -19,8 +20,8 @@ export const Dict = styled.div`
 
 export const DictForm = styled.span`
   font-size: 8rem;
-  font-family: "hanyang";
-  font-weight: 800;
+  font-family: ${CHARFONT};
+  font-weight: 900;
 `;
 
 export const DictSound = styled.span`

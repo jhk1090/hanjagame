@@ -1,17 +1,10 @@
-@font-face {
-  font-family: 'hanyang';
-  src: url("../public/static/fonts/HanyangHaeseo.woff2") format("woff2");
-  font-weight: normal;
-  font-style: normal;
-  font-display: swap;
-}
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@900&family=Noto+Serif+SC:wght@900&family=Noto+Serif+TC:wght@900&display=swap');
 
 @font-face {
   font-family: 'jamsil';
-  src: url("../public/static/fonts/Jamsil.woff2") format("woff2");
-  font-weight: normal;
+  src: url('https://cdn.jsdelivr.net/gh/fontbee/font@main/LOTTE/TheJamsil5Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
-  font-display: swap;
 }
 
 #root {
@@ -28,7 +21,7 @@ body {
 }
 
 * {
-  font-family: jamsil, 'hanyang', sans-serif;
+  font-family: 'jamsil', 'Noto Serif KR', 'Noto Serif TC', 'Noto Serif SC', sans-serif;
   box-sizing: border-box !important;
   user-select: none;
   -webkit-user-drag: none;

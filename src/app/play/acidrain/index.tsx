@@ -262,7 +262,7 @@ export const PlayAcidrainPage = () => {
           x={gameWidth / 2}
           y={gameHeight / 2}
           anchor={0.5}
-          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "Noto Serif KR", fontWeight: "800" })}
         />
       );
     } else if (150 <= count && count <= 249) {
@@ -272,7 +272,7 @@ export const PlayAcidrainPage = () => {
           x={gameWidth / 2}
           y={gameHeight / 2}
           anchor={0.5}
-          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "Noto Serif KR", fontWeight: "800" })}
         />
       );
     } else if (250 <= count && count <= 349) {
@@ -282,7 +282,7 @@ export const PlayAcidrainPage = () => {
           x={gameWidth / 2}
           y={gameHeight / 2}
           anchor={0.5}
-          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "hanyang", fontWeight: "800" })}
+          style={new TextStyle({ align: "center", fontSize: "100px", fill: "#000000", fontFamily: "Noto Serif KR", fontWeight: "800" })}
         />
       );
     } else {
@@ -308,7 +308,7 @@ export const PlayAcidrainPage = () => {
               text={hanja.text}
               x={hanja.x}
               y={hanja.y}
-              style={new TextStyle({ align: "center", fontSize: "50px", fill: "#000", stroke: "#fff", strokeThickness: 2, fontFamily: "hanyang" })}
+              style={new TextStyle({ align: "center", fontSize: "50px", fill: "#000", stroke: "#fff", strokeThickness: 2, fontFamily: "Noto Serif KR" })}
             />
           ))}
           {timerElement}

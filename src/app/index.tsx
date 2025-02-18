@@ -11,7 +11,6 @@ import styled, { createGlobalStyle } from "styled-components";
 import { DictNewPage } from "./dict/new";
 import { v4 } from "uuid";
 import { PlayAcidrainPage } from "./play/acidrain";
-import WebFont from "webfontloader";
 import { DictModifyPage } from "./dict/modify";
 
 interface IAnimateBackground {
@@ -45,23 +44,23 @@ const AnimateBackground = styled.div<IAnimateBackground>`
     list-style: none;
     width: 20px;
     height: 20px;
-    background: rgba(255, 255, 255, 0.3);
+    /* background: rgba(255, 255, 255, 0.3); */
     animation: animate 25s linear infinite;
     bottom: -150px;
   }
 
   .circles li:nth-child(1) {
     left: 25%;
-    width: 80px;
-    height: 80px;
+    width: 120px;
+    height: 120px;
     font-size: 80px;
     animation-delay: 0s;
   }
 
   .circles li:nth-child(2) {
     left: 10%;
-    width: 20px;
-    height: 20px;
+    width: 60px;
+    height: 60px;
     font-size: 20px;
     animation-delay: 2s;
     animation-duration: 12s;
@@ -69,16 +68,16 @@ const AnimateBackground = styled.div<IAnimateBackground>`
 
   .circles li:nth-child(3) {
     left: 70%;
-    width: 20px;
-    height: 20px;
+    width: 60px;
+    height: 60px;
     font-size: 20px;
     animation-delay: 4s;
   }
 
   .circles li:nth-child(4) {
     left: 40%;
-    width: 60px;
-    height: 60px;
+    width: 100px;
+    height: 100px;
     font-size: 60px;
     animation-delay: 0s;
     animation-duration: 18s;
@@ -86,32 +85,32 @@ const AnimateBackground = styled.div<IAnimateBackground>`
 
   .circles li:nth-child(5) {
     left: 65%;
-    width: 20px;
-    height: 20px;
+    width: 60px;
+    height: 60px;
     font-size: 20px;
     animation-delay: 0s;
   }
 
   .circles li:nth-child(6) {
     left: 75%;
-    width: 110px;
-    height: 110px;
+    width: 150px;
+    height: 150px;
     font-size: 110px;
     animation-delay: 3s;
   }
 
   .circles li:nth-child(7) {
     left: 35%;
-    width: 150px;
-    height: 150px;
+    width: 190px;
+    height: 190px;
     font-size: 150px;
     animation-delay: 7s;
   }
 
   .circles li:nth-child(8) {
     left: 50%;
-    width: 25px;
-    height: 25px;
+    width: 65px;
+    height: 65px;
     font-size: 25px;
     animation-delay: 15s;
     animation-duration: 45s;
@@ -119,8 +118,8 @@ const AnimateBackground = styled.div<IAnimateBackground>`
 
   .circles li:nth-child(9) {
     left: 20%;
-    width: 15px;
-    height: 15px;
+    width: 55px;
+    height: 55px;
     font-size: 15px;
     animation-delay: 2s;
     animation-duration: 35s;
@@ -128,8 +127,8 @@ const AnimateBackground = styled.div<IAnimateBackground>`
 
   .circles li:nth-child(10) {
     left: 85%;
-    width: 150px;
-    height: 150px;
+    width: 190px;
+    height: 190px;
     font-size: 150px;
     animation-delay: 0s;
     animation-duration: 11s;
@@ -217,11 +216,6 @@ const IndexPage = () => {
   const [initPage, setInitPage] = React.useState<JSX.Element>(<></>);
 
   React.useEffect(() => {
-    WebFont.load({
-      custom: {
-        families: ['hanyang', 'jamsil'],
-      },
-    });
     setColorPair(["#d6b547", "#ffeac4"])
     setInitPage(
       <>
@@ -286,12 +280,12 @@ export default function App() {
       <HeadStyle />
       <AnimateBackground $primary={colorPair[0]} $secondary={colorPair[1]}>
         <ul className="circles">
-          <li>一</li>
-          <li>丨</li>
+          <li>日</li>
+          <li>困</li>
           <li>力</li>
           <li>⼔</li>
           <li>匸</li>
-          <li>⼵</li>
+          <li>樂</li>
           <li>⼾</li>
           <li>⽽</li>
           <li>⾗</li>

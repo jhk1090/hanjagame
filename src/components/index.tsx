@@ -1,5 +1,6 @@
 import { css, styled } from "styled-components";
 import { Helmet } from "react-helmet";
+import { CHARFONT } from "../constant/CHARFONT";
 
 export const PageTitle = ({ title }: { title: string; }) => {
     return <Helmet><title>{title}</title></Helmet>
@@ -34,8 +35,8 @@ export const Article = styled.article`
 `;
 
 export const ButtonLabel = styled.span`
-  font-weight: 800;
-  font-family: "hanyang";
+  font-weight: 900;
+  font-family: ${CHARFONT};
   font-size: 10rem;
 `;
 

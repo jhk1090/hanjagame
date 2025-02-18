@@ -1,0 +1,1 @@
+export const CHARFONT = "'Noto Serif KR', 'Noto Serif TC'"

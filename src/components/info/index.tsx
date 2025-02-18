@@ -59,3 +59,7 @@ export const InfoParagraph = styled(Paragraph)`
   margin-bottom: .25rem;
   font-size: 4rem;
 `
+
+export const InfoLi = styled.li`
+  font-size: 4rem;
+`
