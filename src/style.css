@@ -1,9 +1,14 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@900&family=Noto+Serif+SC:wght@900&family=Noto+Serif+TC:wght@900&display=swap');
-
 @font-face {
   font-family: 'jamsil';
   src: url('https://cdn.jsdelivr.net/gh/fontbee/font@main/LOTTE/TheJamsil5Bold.woff2') format('woff2');
   font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Noto Serif KR';
+  src: url('../public/static/fonts/NotoSerifKR-Black.woff2') format('woff2');
+  font-weight: 900;
   font-style: normal;
 }
 
@@ -21,9 +26,9 @@ body {
 }
 
 * {
-  font-family: 'jamsil', 'Noto Serif KR', 'Noto Serif TC', 'Noto Serif SC', sans-serif;
+  font-family: 'jamsil', 'Noto Serif KR', sans-serif;
   box-sizing: border-box !important;
-  user-select: none;
+  /* user-select: none; */
   -webkit-user-drag: none;
 }
 

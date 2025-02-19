@@ -31,7 +31,7 @@ export const InfoPage = () => {
             </div>
             <div>
               <InfoSubTitle>저작권 고지</InfoSubTitle>
-              <InfoParagraph>글꼴 출처: <a style={{textDecoration: "none"}} href="https://noonnu.cc/font_page/1127" target="_blank">더잠실체</a>, <a style={{textDecoration: "none"}} href="https://fonts.google.com/noto/specimen/Noto+Serif+KR" target="_blank">Noto Serif Korean</a>, <a style={{textDecoration: "none"}} href="https://fonts.google.com/noto/specimen/Noto+Serif+TC" target="_blank">Noto Serif Traditional Chinese</a></InfoParagraph>
+              <InfoParagraph>글꼴 출처: <a style={{textDecoration: "none"}} href="https://noonnu.cc/font_page/1127" target="_blank">더잠실체</a>, <a style={{textDecoration: "none"}} href="https://fonts.google.com/noto/specimen/Noto+Serif+KR" target="_blank">Noto Serif Korean</a></InfoParagraph>
             </div>
             <div>
               <InfoSubTitle>제작자</InfoSubTitle>

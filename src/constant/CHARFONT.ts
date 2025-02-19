@@ -1,1 +1,1 @@
-export const CHARFONT = "'Noto Serif KR', 'Noto Serif TC'"
+export const CHARFONT = "'Noto Serif KR'"
